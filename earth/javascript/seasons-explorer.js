@@ -2401,7 +2401,6 @@ function sampleRender() {
 var updateRate = 30;
 var updateInterval = 1000/updateRate;
 var nextAnimationTime = new Date().getTime(); + updateInterval;
-var keepAnimating = true;
 
 //
 // Back Lighting Handler
@@ -3189,8 +3188,6 @@ function mouseMove(event) {
         lastY = event.clientY;
 
         updateLookAt();
-
-        if (!keepAnimating) requestAnimFrame(sampleAnimate);
     }
 }
 
@@ -4368,14 +4365,6 @@ function sampleAnimate(t) {
         infoGraph();
     }
 };
-
-SceneJS.bind("error", function() {
-    keepAnimating = false;
-});
-
-SceneJS.bind("reset", function() {
-    keepAnimating = false;
-});
 
 var displayed = false;
 
