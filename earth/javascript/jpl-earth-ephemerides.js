@@ -109,6 +109,15 @@ var SOLAR_CONSTANT   = 1367.6;
 var STANDARD_SUN     = 1000;
 var SOLAR_FACTOR_AM1 = STANDARD_SUN / SOLAR_CONSTANT;
 
+var au2km = 149597870.691;
+var deg2rad = Math.PI/180;
+
+// BEGIN externally defined params
+//   * are these input parameters that should be defined in client code?
+//   * or are they effectively constants that live here (obviously au2km is one)
+var scale_factor = 1000;
+//   END possible input params
+
 var earth_ephemerides_jpl_2010 = [
     { date: "2010-01-01T00:00:00.000Z", dayNumber:   0,  x: -1.797649421153966E-01,  y: -1.744524342744261E-05,  z:  9.703470879279176E-01, vx: -1.720173258746768E-02, vy:  8.961831030284133E-07, vz: -3.148295252761322E-03,  lt: 5.699617035710165E-03,  rg: 9.868580980912497E-01, rr:  3.782642798847245E-05 },
     { date: "2010-01-02T00:00:00.000Z", dayNumber:   1,  x: -1.969386819695067E-01,  y: -1.654144078249931E-05,  z:  9.670493037259060E-01, vx: -1.714493429540822E-02, vy:  9.036835286012194E-07, vz: -3.447132054416888E-03,  lt: 5.699851990725638E-03,  rg: 9.868987792911011E-01, rr:  4.352431624144069E-05 },

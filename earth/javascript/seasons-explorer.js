@@ -29,8 +29,6 @@ var rad2deg = 180/Math.PI;
 var au2km = 149597870.691;
 var orbitalTilt = 23.45;
 
-var scale_factor = 1000;
-
 var sun_diameter =         1392000.0 / scale_factor;
 var earth_diameter =         12742.0 / scale_factor;
 
