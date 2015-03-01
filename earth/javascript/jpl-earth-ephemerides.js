@@ -111,6 +111,7 @@ var SOLAR_FACTOR_AM1 = STANDARD_SUN / SOLAR_CONSTANT;
 
 var au2km = 149597870.691;
 var deg2rad = Math.PI/180;
+var fourPI = Math.PI * 4;
 
 // BEGIN externally defined params
 //   * are these input parameters that should be defined in client code?

@@ -1,4 +1,6 @@
 (function() {
+"use strict";
+
 var use_diffuse_correction   = document.getElementById("use-diffuse-correction") || { checked: true, onchange: null };
 var use_airmass = document.getElementById("use-airmass") || { checked: true, onchange: null  };
 var time_24h =  document.getElementById("time-24h") || { checked: false, onchange: null };
@@ -142,7 +144,7 @@ var earth = {
       this.pos.z = p[2];
       vec3.set(p, this.pos_vec3);
       vec3.normalize(this.pos_vec3, this.pos_vec3_normalized);
-      orbit_correction_degrees = Math.acos(vec3.dot([1, 0, 0], this.pos_vec3_normalized)) * rad2deg;
+      // orbit_correction_degrees = Math.acos(vec3.dot([1, 0, 0], this.pos_vec3_normalized)) * rad2deg;
       // this.orbit_correct_degrees = Math.acos(vec3.dot(earth_pos_jun_normalized_vec3, this.pos_vec3_normalized)) * rad2deg;
       // this.orbit_correct_degrees = Math.acos(vec3.dot([0, this.pos_vec3_normalized[1], -1], earth_pos_jun_normalized_vec3)) * rad2deg;
       this.orbit_correction_quat = quat4.axisVecAngleDegreesCreate(this.up_vec3, this.orbit_correction_degrees);
@@ -182,7 +184,7 @@ var earth = {
 
 earth.calculatePosition(earth_pos_jun_normalized_vec3);
 
-earthInSpaceLookAt = {
+var earthInSpaceLookAt = {
   yaw: 0,
   lookAtYaw: 0,
   pitch: -1,
@@ -2833,7 +2835,6 @@ function calculateSurfaceEyeUpLook() {
     flagpole_global = lat_long_to_global_cartesian(surface.latitude, surface.longitude, 1.0 + (surface.min_height + surface.flagpole.height / 2));
     // flagpole_global[1] += 0.05;
     // flagpole_global[2] -= 9;
-    x = (earth.radius + surface.min_height + surface.flagpole.height / 2) / earth.radius;
 
     // generate an appropriate offset from the flagpole using the cross-product of the
     // current surface_up with the surface_up vector rotated 90 degrees northward
@@ -3484,6 +3485,7 @@ function earthRotationToTimeStr24(rot) {
 function earthRotationToTimeStr12(rot) {
     var time = earthRotationToDecimalTime(rot);
     var time_hours = Math.floor(time);
+    var am_pm;
     if (time_hours >= 12) {
         am_pm = "PM";
     } else {
@@ -4268,7 +4270,7 @@ function chooseTiltHandler() {
     // earth.tilt.axis_vec3
     earth_tilt_quat = quat4.axisVecAngleDegreesCreate(earth.tilt.axis_vec3,  earth.tilt.angle);
     // earth_tilt_quat = quat4.axisAngleDegreesCreate(0, 0, 1,  earth.tilt.angle);
-    earth_tilt_mat4 = quat4.toMat4(earth_tilt_quat);
+    //earth_tilt_mat4 = quat4.toMat4(earth_tilt_quat);
     earth_tilt_quaternion.set("rotation", earth.tilt);
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
@@ -4286,7 +4288,7 @@ choose_tilt.onchange = chooseTiltHandler;
 //
 
 function sampleAnimate() {
-    sampleTime = new Date().getTime();
+    var sampleTime = new Date().getTime();
     if (sampleTime > nextAnimationTime) {
         nextAnimationTime = nextAnimationTime + updateInterval;
         if (sampleTime > nextAnimationTime) nextAnimationTime = sampleTime + updateInterval;
