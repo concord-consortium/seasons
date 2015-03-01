@@ -1,3 +1,5 @@
+/* jshint undef: true */
+
 // Based on data from JPL HORIZONS Ephemerides service
 //
 // ******* IMPORTANT NOTE ********
@@ -108,6 +110,7 @@
 var SOLAR_CONSTANT   = 1367.6;
 var STANDARD_SUN     = 1000;
 var SOLAR_FACTOR_AM1 = STANDARD_SUN / SOLAR_CONSTANT;
+var DIFFUSE_CORRECTION_FACTOR = 1.177;
 
 var au2km = 149597870.691;
 var deg2rad = Math.PI/180;
@@ -492,7 +495,7 @@ var earth_ephemerides_geometry = function(scale) {
     var indices = [];
     var loc;
     var len = earth_ephemerides_jpl_2010.length;
-    if (!(typeof(scale) === "number")) {
+    if (typeof(scale) !== "number") {
         scale = 1;
     }
     for (var i = 0; i < len; i++) {
@@ -501,7 +504,7 @@ var earth_ephemerides_geometry = function(scale) {
         indices.push(i);
     }
     return { positions: points, indices: indices };
-}
+};
 
 // for 2010
 var day_number_by_month = {
@@ -551,7 +554,7 @@ var date_by_day_number = {
 
 var earth_ephemerides_datum_by_month = function(month) {
     return earth_ephemerides_jpl_2010[day_number_by_month[month]];
-}
+};
 
 var earth_ephemerides_solar_constant_by_day_number = function(day_num) {
     var empherides_datum = earth_ephemerides_jpl_2010[day_num];
@@ -566,13 +569,12 @@ var earth_ephemerides_location_by_day_number = function(day_num) {
         empherides_datum.x * au2km / scale_factor,
         empherides_datum.y * au2km / scale_factor,
         empherides_datum.z * au2km / scale_factor
-    ]
+    ];
 };
 
 var earth_ephemerides_distance_from_sun_by_day_number = function(day_num) {
-    var empherides_datum = earth_ephemerides_jpl_2010[day_num];
     var ep = earth_ephemerides_location_by_day_number(day_num);
-    var distance = Math.sqrt(ep[0] * ep[0] + ep[1] * ep[1] + ep[2] * ep[2])
+    var distance = Math.sqrt(ep[0] * ep[0] + ep[1] * ep[1] + ep[2] * ep[2]);
     return distance;
 };
 
@@ -725,44 +727,44 @@ var sunlight_data = [
 
     3.900,  9.5,    0.17,   0,      0.29,
     4.000,  8.6,    0.0045, 0,      0.025
-]
+];
 
 function  rayleighTransmission(light, pressure_corrected_air_mass) {
     var rt = Math.exp(-pressure_corrected_air_mass / (Math.pow (light.wavelength, 4) * (115.6406 - 1.335/ (light.wavelength * light.wavelength))));
     return rt;
-};
+}
 
 function radVecCorrection(day_number) {
     var day_angle_in_radians = 6.283185 * (day_number - 1) / 365;
     return 1.00011 + 0.034221 * Math.cos(day_angle_in_radians) + 0.00128 * Math.sin(day_angle_in_radians) +
            0.000719 * Math.cos(2 * day_angle_in_radians) + 0.000077 * Math.sin(2 *day_angle_in_radians);
-};
+}
 
 function  ozoneTransmission(light, zenith_angle_rad, total_column_ozone) {
     var cos_zenith_angle_rad = Math.cos(zenith_angle_rad);
     var amoz = (1 + 22 / 6370) / Math.pow((cos_zenith_angle_rad * cos_zenith_angle_rad + 2 * (22 / 6370)), 0.5);
     return Math.exp(-light.ozone_absorption * amoz * total_column_ozone);
-};
+}
 
 function  uniformMixedGasesTransmission(light, pressure_corrected_air_mass) {
     return Math.exp( -1.41 * light.uniform_gas_absorption * pressure_corrected_air_mass /
-        Math.pow((1 + 118.93 * light.uniform_gas_absorption * pressure_corrected_air_mass), 0.45))
-};
+        Math.pow((1 + 118.93 * light.uniform_gas_absorption * pressure_corrected_air_mass), 0.45));
+}
 
 function  waterVaporTransmission(light, precipitable_water, airmass) {
     return Math.exp( -0.2385 * light.water_absorption * precipitable_water * airmass /
-        Math.pow(1 + 20.07 * light.water_absorption * precipitable_water * airmass, 0.45))
-};
+        Math.pow(1 + 20.07 * light.water_absorption * precipitable_water * airmass, 0.45));
+}
 
 function  aerosolTransmission(light, aerosol_optical_depth, alpha, airmass) {
     var dela = aerosol_optical_depth * Math.pow((light.wavelength / 0.5), -alpha);
     return Math.exp(-dela * airmass);
-};
+}
 
 // http://en.wikipedia.org/wiki/Airmass#CITEREFPickering2002
 function airMass(alt) {
-    return 1/(Math.sin((alt + 244/(165 + Math.pow(47 * alt, 1.1))) * deg2rad))
-};
+    return 1/(Math.sin((alt + 244/(165 + Math.pow(47 * alt, 1.1))) * deg2rad));
+}
 
 function directInsolation(wave_index, day_number, altitude) {
     var index = wave_index * 5;
@@ -780,10 +782,10 @@ function directInsolation(wave_index, day_number, altitude) {
     var zenith_angle_rad = (90 - altitude) * deg2rad;
     var airmass = airMass(altitude);
 
-    var precipitable_water = 1.42
-    var aerosol_optical_depth = 0.27
+    var precipitable_water = 1.42;
+    var aerosol_optical_depth = 0.27;
     var total_column_ozone = 0.34;
-    var alpha = 1.14
+    var alpha = 1.14;
 
     var rayleigh_transmission = rayleighTransmission(light, airmass);
     var ozone_transmission = ozoneTransmission(light, zenith_angle_rad, total_column_ozone);
@@ -800,7 +802,7 @@ function directHorizontalInsolation(wave_index, day_number, altitude) {
     var results = directInsolation(wave_index, day_number, altitude);
     results[1] = Math.sin(altitude * deg2rad) * results[1];
     return results;
-};
+}
 
 // color   wavelength   wavelength-in-table   index-in-table
 // red           670                  668                36
@@ -818,9 +820,9 @@ function totalDirectInsolation(day_number, altitude) {
         spectral_data.push(current_value[1]);
         total_direct += 0.5 * (current_value[0] - previous_value[0]) * (current_value[1] + previous_value[1]);
         previous_value = current_value;
-    };
+    }
     return { total:total_direct, red: spectral_data[36], green: spectral_data[27], blue: spectral_data[19] };
-};
+}
 
 function totalHorizontalDirectInsolation(day_number, altitude) {
     var total_direct = 0;
@@ -833,8 +835,6 @@ function totalHorizontalDirectInsolation(day_number, altitude) {
         spectral_data.push(current_value[1]);
         total_direct += 0.5 * (current_value[0] - previous_value[0]) * (current_value[1] + previous_value[1]);
         previous_value = current_value;
-    };
+    }
     return { total:total_direct, red: spectral_data[36], green: spectral_data[27], blue: spectral_data[19] };
-};
-
-DIFFUSE_CORRECTION_FACTOR = 1.177;
+}
