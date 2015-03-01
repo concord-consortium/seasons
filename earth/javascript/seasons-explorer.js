@@ -1,3 +1,30 @@
+/* jshint undef: true */
+
+/* global
+    $: false,
+    sprintf: false,
+    SceneJS: false,
+    vec3: false,
+    quat4: false,
+    mat4: false,
+
+    LITE_VERSION: false,
+    cities: false,
+
+    date_by_day_number: false,
+    day_number_by_month: false,
+    DIFFUSE_CORRECTION_FACTOR: false,
+    earth_ephemerides_distance_from_sun_by_day_number: false,
+    earth_ephemerides_location_by_day_number: false,
+    earth_ephemerides_solar_constant_by_day_number: false,
+    month_by_day_number: false,
+    scale_factor: false,
+    SOLAR_CONSTANT: false,
+    SOLAR_FACTOR_AM1: false,
+    totalDirectInsolation: false,
+    totalHorizontalDirectInsolation: false,
+*/
+
 (function() {
 "use strict";
 
