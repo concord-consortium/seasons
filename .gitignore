@@ -2,3 +2,4 @@ references/
 examples/
 lib/ace
 wise4/dist
+*.sublime-workspace
