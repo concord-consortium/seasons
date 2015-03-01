@@ -25,17 +25,8 @@ var solar_radiation_longitude_graph = document.getElementById("solar-radiation-l
 
 // some constants
 var deg2rad = Math.PI/180;
-var min2rad = Math.PI/(180*60);
-var sec2rad = Math.PI/(180*60*60);
 var rad2deg = 180/Math.PI;
 var au2km = 149597870.691;
-var earthMass = 5.9736e24;        // km
-var earthRadius = 6378.1;         // km
-var earthOrbitalPeriod = 365.256363004; // days
-var earthRotationPeriod = 0.99726968;   // days
-var twoPI  = Math.PI * 2;
-var fourPI = Math.PI * 4;
-var sqrt2 = Math.sqrt(2);
 var orbitalTilt = 23.45;
 
 var AU = 149597870.691;
@@ -73,7 +64,7 @@ var milky_way_apparent_radius = earth_orbital_radius * 10;
 
 var initial_day_number = day_number_by_month.jun;
 var initial_earth_pos_vec3 = earth_ephemerides_location_by_day_number(initial_day_number);
-var earth_pos_normalized_vec3 = vec3.normalize(initial_earth_pos_vec3);
+vec3.normalize(initial_earth_pos_vec3);
 var earth_pos_jun_normalized_vec3 = initial_earth_pos_vec3;
 
 var sun = {
@@ -87,11 +78,6 @@ function copyVec3ToObj(v3, obj) {
   obj.z = v3[2];
 }
 
-function copyObjToVec3(obj, v3) {
-  v3[0] = obj.x;
-  v3[1] = obj.y;
-  v3[2] = obj.z;
-}
 
 var initial_earth_rotation = 0;
 
@@ -282,18 +268,6 @@ function getSunEarthLinePositions(month) {
   ];
 }
 
-var earthOrbitData = {
-  aphelion: 1.01671388,
-  perihelion: 0.98329134,
-  semiMajorAxis: 1.00000261,
-  radius: 1.00,
-  period: 1.00,
-  inclination: 7.25*deg2rad,
-  eccentricity : 0.01671123,
-  longitude : 348.73936*deg2rad,
-  argument : 114.20783*deg2rad
-};
-
 // San Francisco: 38, 122
 
 var surface_line_width = earth.radius / 200;
@@ -441,7 +415,7 @@ for (var i = 1; i < latitude_rose_grid_points; i += 2) {
 //
 var sun_rays = function() {
     var points = [];
-    var x, y, z, rangle;
+    var y, z, rangle;
     var density = 36;
     var angle_distance = Math.PI * earth.radius / density;
     var angle_increment;
@@ -471,23 +445,7 @@ for (var i = 0; i < sun_ray_points; i++) {
 //
 // Initial lookAt: eye
 //
-var initial_eye_quat;
-var initial_eye_mat4;
-var initial_eye_vec3 = vec3.create();
 var initial_eye = {};
-
-function update_initial_eye(d) {
-    if (d < (earth.radius * 1.5)) d = earth.radius * 1.5;
-    distance = d;
-    initial_eye_quat = quat4.axisAngleDegreesCreate(1, 0, 0, 0);
-    initial_eye_mat4 = quat4.toMat4(initial_eye_quat);
-    mat4.multiplyVec3(initial_eye_mat4, [0, 0,  distance], initial_eye_vec3);
-    initial_eye =      {
-        x: initial_eye_vec3[0] + earth.pos.x,
-        y: initial_eye_vec3[1] + earth.pos.y,
-        z: initial_eye_vec3[2] + earth.pos.z
-    };
-}
 
 SceneJS.createNode({
     id: "x-label",
@@ -2585,7 +2543,6 @@ sunRiseSetHandler();
 //
 
 var noon_midnight_selector =  SceneJS.withNode("noon-midnight-selector");
-var noon_midnight_rotation =  SceneJS.withNode("noon-midnight-rotation");
 
 function noonMidnightHandler() {
     if (sun_noon_midnight.checked) {
@@ -2668,9 +2625,6 @@ var earth_atmosphere_selector = SceneJS.withNode("earth-atmosphere-selector");
 var atmosphere_material       = SceneJS.withNode("atmosphere-material");
 var atmosphere_transparent    = SceneJS.withNode("atmosphere-transparent");
 
-var surface_disk_material = SceneJS.withNode("surface-disk-material");
-var flagpole_material = SceneJS.withNode("flagpole-material");
-
 var surface_disc_selector = SceneJS.withNode("surface-disc-selector");
 
 // sun-material ...
@@ -2751,7 +2705,6 @@ var surface_eye_vec3 = [];
 var new_surface_eye_vec3 = [];
 var surface_dir_vec3 = [];
 var surface_up_vec3 = [];
-var surface_look_vec3 = [];
 var new_surface_look_vec3 = [];
 var surface_up_minus_90_vec3 = [];
 var surface_cross_vec3 = [];
@@ -2809,7 +2762,6 @@ function lat_long_to_cartesian_corrected_for_tilt(lat, lon, r) {
 function lat_long_to_global_cartesian(lat, lon, r) {
     r = r || 1;
     var q2 = [];
-    var v2 = [];
 
     var lat_lon = lat_long_to_cartesian(lat, lon - earth.rotation, r);
 
@@ -2908,7 +2860,7 @@ function calculateSurfaceEyeUpLook() {
 
 function calculateSurfacePitchAxis(up, yaw) {
     var pitch_axis = [];
-    var yaw_normalized = vec3.normalize(yaw);
+    vec3.normalize(yaw);
     vec3.cross(up, yaw, pitch_axis);
     return pitch_axis;
 }
@@ -3022,7 +2974,7 @@ function setupSurfaceView() {
     longitude_line_selector.set("selection", [0]);
 
     // update the scenegraph lookAt
-    var lookat = calculateSurfaceEyeUpLook();
+    calculateSurfaceEyeUpLook();
     earthInSpaceLookAt.update();
 }
 
@@ -3283,12 +3235,6 @@ function handleArrowKeysEarthInSpace(evt) {
     }
 }
 
-function update_surface_height(d) {
-    if (d >= surface.min_height) {
-        surface.height = d;
-    }
-}
-
 function decrementSurfaceDistance() {
     if (surface.distance > 2500) {
         surface.distance -= 100;
@@ -3314,7 +3260,6 @@ function incrementSurfaceDistance() {
 }
 
 function handleArrowKeysSurfaceView(evt) {
-    var distanceIncrementFactor = 30;
     evt = (evt) ? evt : ((window.event) ? event : null);
     if (evt) {
         switch (evt.keyCode) {
@@ -3409,17 +3354,15 @@ function elementGetX(el) {
     return xpos;
 }
 
-function elementGetY(el) {
-    var ypos = 0;
-    // jshint -W041
-    while( el != null ) {
-        ypos += el.offsetTop;
-        el = el.offsetParent;
-    }
-    return ypos;
-}
-
-var container = document.getElementById("container");
+// function elementGetY(el) {
+//     var ypos = 0;
+//     // jshint -W041
+//     while( el != null ) {
+//         ypos += el.offsetTop;
+//         el = el.offsetParent;
+//     }
+//     return ypos;
+// }
 
 //
 // Latitude Slider
@@ -3432,7 +3375,6 @@ var latitude_slider         = document.getElementById("latitude-slider");
 
 function latitudeSlider() {
     var canvas_properties = the_canvas.getBoundingClientRect();
-    var container_properties = container.getBoundingClientRect();
     latitude_slider_div.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - latitude_slider_div.offsetHeight - 200 + "px";
     latitude_slider_div.style.left = canvas_properties.right - elementGetX(document.getElementById("content")) - latitude_slider_div.offsetWidth + "px";
 }
@@ -3471,8 +3413,6 @@ function debugLabel() {
         var eye = earthInSpaceLookAt.lookAt.get("eye");
         var look = earthInSpaceLookAt.lookAt.get("look");
         var up = earthInSpaceLookAt.lookAt.get("up");
-
-        var atmos_trans = atmosphere_transparent.get();
 
         var flags = atmosphere_transparent.get('flags');
 
@@ -3526,7 +3466,6 @@ function debugLabel() {
         debug_content.innerHTML = labelStr;
 
         var canvas_properties = the_canvas.getBoundingClientRect();
-        var container_properties = container.getBoundingClientRect();
         debug_label.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - debug_label.offsetHeight - 10 + "px";
         debug_label.style.left = canvas_properties.right - elementGetX(document.getElementById("content")) - debug_label.offsetWidth + "px";
     }
@@ -3637,7 +3576,7 @@ function useHorizontalFluxHandler() {
 use_horizontal_flux.onchange = useHorizontalFluxHandler;
 
 function spectralSolarRadiation(alt) {
-    var radiation, normalized, flags;
+    var radiation, normalized;
     if (use_horizontal_flux.checked) {
         radiation = totalHorizontalDirectInsolation(earth.day_number, alt);
     } else {
@@ -3740,7 +3679,6 @@ function infoLabel() {
 
         // positioning the label ...
         var canvas_properties = the_canvas.getBoundingClientRect();
-        var container_properties = container.getBoundingClientRect();
         // bottom
         // info_label.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - info_label.offsetHeight - 24 + "px";
         info_label.style.top = canvas_properties.top + window.pageYOffset + 5 + "px";
@@ -3759,7 +3697,6 @@ var controls_label = document.getElementById("controls-label");
 function controlsLabel() {
     if (controls_label) {
         var canvas_properties = the_canvas.getBoundingClientRect();
-        var container_properties = container.getBoundingClientRect();
         controls_label.style.top = canvas_properties.top + window.pageYOffset + 45 + "px";
         controls_label.style.left = elementGetX(the_canvas) - elementGetX(document.getElementById("content")) + 15 + "px";
     }
@@ -3799,7 +3736,6 @@ function infoGraph() {
 
         // positioning the graph container ...
         var canvas_properties = the_canvas.getBoundingClientRect();
-        var container_properties = container.getBoundingClientRect();
         // info_graph.style.top = canvas_properties.top + window.pageYOffset + 5 + "px";
         info_graph.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - info_graph.offsetHeight - 10 + "px";
         info_graph.style.left = elementGetX(the_canvas) - elementGetX(document.getElementById("content")) + startingXpos + "px";
@@ -3918,7 +3854,7 @@ function drawSolarRadiationLatitudeGraph() {
 
     // data
     rad_lat_ctx.lineWidth = 2;
-    var x0, y0, x1, y1;
+    var x0, y0, y1;
     for (var x = 0; x < data_length; x++) {
         x0 = x * x_factor;
         y0 = graph_base;
@@ -4056,7 +3992,6 @@ clearSolarRadiationLongitudeData();
 function drawSolarRadiationLongitudeGraph() {
     var solar_alt = solar_altitude(surface.latitude, surface.longitude);
     var solar_rad = solarRadiation(solar_alt);
-    var time = earthRotationToDecimalTime(earth.rotation - surface.longitude);
     var index = Math.round(surface.latitude + 90);
     solarRadiationLongitudeData[index] = solar_rad;
     if (solarRadiationLongitudeDataNew) {
@@ -4090,7 +4025,7 @@ function drawSolarRadiationLongitudeGraph() {
     }
 
     rad_lon_ctx.lineWidth = 2;
-    var x, x0, y0, x1, y1;
+    var x, x0, y0, y1;
     for (x = 0; x < data_length; x++) {
         x0 = x * x_factor;
         y0 = graph_base;
@@ -4260,7 +4195,7 @@ var choose_month = document.getElementById("choose-month");
 var previous_month = document.getElementById("previous-month");
 var next_month = document.getElementById("next-month");
 
-function chooseMonthHandler(event) {
+function chooseMonthHandler() {
     var mon = choose_month.value;
     setEarthPositionByMon(mon);
 }
@@ -4327,8 +4262,7 @@ var choose_tilt = document.getElementById("choose-tilt");
 var earth_tilt_quaternion = SceneJS.withNode("earth-tilt-quaternion");
 
 function chooseTiltHandler() {
-    var tilt = getRadioSelection(choose_tilt),
-        rotation = {};
+    var tilt = getRadioSelection(choose_tilt);
     switch (tilt) {
         case "yes":
             earth.tilt.angle = orbitalTilt;
@@ -4358,7 +4292,7 @@ choose_tilt.onchange = chooseTiltHandler;
 // Animation
 //
 
-function sampleAnimate(t) {
+function sampleAnimate() {
     sampleTime = new Date().getTime();
     if (sampleTime > nextAnimationTime) {
         nextAnimationTime = nextAnimationTime + updateInterval;
