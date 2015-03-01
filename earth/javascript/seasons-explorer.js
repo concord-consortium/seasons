@@ -1,3 +1,4 @@
+(function() {
 var use_diffuse_correction   = document.getElementById("use-diffuse-correction") || { checked: true, onchange: null };
 var use_airmass = document.getElementById("use-airmass") || { checked: true, onchange: null  };
 var time_24h =  document.getElementById("time-24h") || { checked: false, onchange: null };
@@ -5,7 +6,6 @@ var graph_view   = document.getElementById("graph-view") || { checked: false, on
 var earth_rose_grid = document.getElementById("earth-rose-grid") || { checked: false, onchange: null };
 var sun_grid = document.getElementById("sun-grid") || { checked: false, onchange: null };
 var sunrise_set = document.getElementById("sun-rise-set") || { checked: false, onchange: null };
-var sun_earth_line = document.getElementById("sun-earth-line") || { checked: false, onchange: null };
 var backlight = document.getElementById("backlight") || { checked: false, onchange: null  };
 var use_horizontal_flux   = document.getElementById("use-horizontal-flux") || { checked: true, onchange: null };
 var sun_earth_line = document.getElementById("sun-earth-line");
@@ -13,8 +13,6 @@ var sun_noon_midnight = document.getElementById("sun-noon-midnight") || { checke
 var lat_hour_markers = document.getElementById("lat-hour-markers") || { checked: false, onchange: null };
 var sun_rays = document.getElementById("sun-rays") || { checked: false, onchange: null };
 var surface_view = document.getElementById("surface-view") || { checked: false, onchange: null };
-var debug_view   = document.getElementById("debug-view") || { checked: false, onchange: null };
-
 
 var solar_altitude_graph = document.getElementById("solar-altitude-graph") ||
     { checked: false, onchange: null, style: { display: null } };
@@ -23,23 +21,21 @@ var solar_radiation_latitude_graph = document.getElementById("solar-radiation-la
 var solar_radiation_longitude_graph = document.getElementById("solar-radiation-longitude-graph") ||
     { checked: false, onchange: null, style: { display: null } };
 
+var i;
+
 // some constants
 var deg2rad = Math.PI/180;
 var rad2deg = 180/Math.PI;
 var au2km = 149597870.691;
 var orbitalTilt = 23.45;
 
-var AU = 149597870.691;
-
 var scale_factor = 1000;
 
 var sun_diameter =         1392000.0 / scale_factor;
 var earth_diameter =         12742.0 / scale_factor;
-var earth_orbital_radius =        AU / scale_factor;
 
 var km =                     1.0 / scale_factor;
 var meter =                   km / 1000;
-
 
 var monthData = {
     "jan": { index:  0, num:   1, short_name: 'JAN', long_name: 'January' },
@@ -356,7 +352,7 @@ var square_grid = function(scale, segments) {
     var points = [];
     var p;
     var grid_increment = scale * 2 / segments;
-    for (var i = 0; i <= segments; i++) {
+    for (i = 0; i <= segments; i++) {
         p = i * grid_increment - scale;
         points.push(p, 0, -scale);
         points.push(p, 0, +scale);
@@ -369,12 +365,12 @@ var square_grid = function(scale, segments) {
 var earth_grid_positions = square_grid(earth.radius * 3, 30);
 var earth_grid_indices = [];
 var earth_grid_points = earth_grid_positions.length / 3;
-for (var i = 0; i < earth_grid_points; i++) { earth_grid_indices.push(i); }
+for (i = 0; i < earth_grid_points; i++) { earth_grid_indices.push(i); }
 
 var sun_grid_positions = square_grid(sun.radius * 6, 30);
 var sun_grid_indices = [];
 var sun_grid_points = sun_grid_positions.length / 3;
-for (var i = 0; i < sun_grid_points; i++) { sun_grid_indices.push(i); }
+for (i = 0; i < sun_grid_points; i++) { sun_grid_indices.push(i); }
 
 //
 // Rose Grid
@@ -398,7 +394,7 @@ var earth_rose_scale = earth.radius * 1.5;
 var earth_rose_grid_positions = rose_grid(earth_rose_scale, 24);
 var earth_rose_grid_indices = [];
 var earth_rose_grid_points = earth_rose_grid_positions.length / 3;
-for (var i = 1; i < earth_rose_grid_points; i += 2) {
+for (i = 1; i < earth_rose_grid_points; i += 2) {
     earth_rose_grid_indices.push(i, i+1);
 }
 
@@ -406,14 +402,14 @@ var latitude_rose_scale = earth.radius * 1.25;
 var latitude_rose_grid_positions = rose_grid(latitude_rose_scale, 24);
 var latitude_rose_grid_indices = [];
 var latitude_rose_grid_points = latitude_rose_grid_positions.length / 3;
-for (var i = 1; i < latitude_rose_grid_points; i += 2) {
+for (i = 1; i < latitude_rose_grid_points; i += 2) {
     latitude_rose_grid_indices.push(0, i, 0, i+1);
 }
 
 //
 // Sun Rays
 //
-var sun_rays = function() {
+var sun_ray_positions = (function() {
     var points = [];
     var y, z, rangle;
     var density = 36;
@@ -433,12 +429,11 @@ var sun_rays = function() {
         angle = a % 180;
     }
     return points;
-};
+}());
 
-var sun_ray_positions = sun_rays();
 var sun_ray_indices = [];
 var sun_ray_points = sun_ray_positions.length / 3 - 1;
-for (var i = 0; i < sun_ray_points; i++) {
+for (i = 0; i < sun_ray_points; i++) {
     sun_ray_indices.push(0, i);
 }
 
@@ -4172,7 +4167,7 @@ for (var c = 0; c < cities.length; c++) {
     }
 }
 
-for (var i = 0; i < active_cities.length; i++) {
+for (i = 0; i < active_cities.length; i++) {
     city_option = document.createElement('option');
     city = active_cities[i];
     city_location = city.location;
@@ -4335,3 +4330,4 @@ scene.start({
     }
 });
 
+}());
