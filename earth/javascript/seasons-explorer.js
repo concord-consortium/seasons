@@ -65,13 +65,13 @@ var monthData = {
     "dec": { index: 11, num:  12, short_name: 'DEC', long_name: 'December' }
 };
 
-var monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+var monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
 var earth_orbital_radius = au2km / scale_factor;
 
 var milky_way_apparent_radius = earth_orbital_radius * 10;
 
-var initial_day_number = day_number_by_month['jun'];
+var initial_day_number = day_number_by_month.jun;
 var initial_earth_pos_vec3 = earth_ephemerides_location_by_day_number(initial_day_number);
 var earth_pos_normalized_vec3 = vec3.normalize(initial_earth_pos_vec3);
 var earth_pos_jun_normalized_vec3 = initial_earth_pos_vec3;
@@ -141,12 +141,12 @@ var earth = {
       var ang,
           cross = vec3.create(),
           sign;
-      ang =  Math.acos(vec3.dot(earth_pos_jun_normalized_vec3, this.pos_vec3_normalized)) * rad2deg,
+      ang = Math.acos(vec3.dot(earth_pos_jun_normalized_vec3, this.pos_vec3_normalized)) * rad2deg;
       vec3.cross(earth_pos_jun_normalized_vec3, this.pos_vec3_normalized, cross);
       sign = vec3.dot([0,1,0],cross);
-      if(sign < 0) {
+      if (sign < 0) {
         ang *= -1;
-      };
+      }
       return modulo(ang, 360);
     },
     yawedOrbitAngle: function() {
@@ -162,7 +162,7 @@ var earth = {
       this.pos.z = p[2];
       vec3.set(p, this.pos_vec3);
       vec3.normalize(this.pos_vec3, this.pos_vec3_normalized);
-      orbit_correction_degrees = Math.acos(vec3.dot([1, 0, 0], this.pos_vec3_normalized)) * rad2deg
+      orbit_correction_degrees = Math.acos(vec3.dot([1, 0, 0], this.pos_vec3_normalized)) * rad2deg;
       // this.orbit_correct_degrees = Math.acos(vec3.dot(earth_pos_jun_normalized_vec3, this.pos_vec3_normalized)) * rad2deg;
       // this.orbit_correct_degrees = Math.acos(vec3.dot([0, this.pos_vec3_normalized[1], -1], earth_pos_jun_normalized_vec3)) * rad2deg;
       this.orbit_correction_quat = quat4.axisVecAngleDegreesCreate(this.up_vec3, this.orbit_correction_degrees);
@@ -233,15 +233,15 @@ earthInSpaceLookAt = {
   calculateUpdate: function() {
     // first handle yaw and pitch for our lookAt-arcball navigation around Earth
     // background: http://rainwarrior.thenoos.net/dragon/arcball.html
-    this._yaw_quat = quat4.axisAngleDegreesCreate(0, 1, 0, this.yaw),
-    this._yaw_mat4 = quat4.toMat4(this._yaw_quat),
-    this._pitch_quat = quat4.axisAngleDegreesCreate(this._yaw_mat4[0], this._yaw_mat4[1], this._yaw_mat4[2], this.pitch),
+    this._yaw_quat = quat4.axisAngleDegreesCreate(0, 1, 0, this.yaw);
+    this._yaw_mat4 = quat4.toMat4(this._yaw_quat);
+    this._pitch_quat = quat4.axisAngleDegreesCreate(this._yaw_mat4[0], this._yaw_mat4[1], this._yaw_mat4[2], this.pitch);
     quat4.multiply(this._pitch_quat, this._yaw_quat, this._result_quat);
 
     // update the eye coordinates
     quat4.multiplyVec3(this._result_quat, this.initial_eye_vec3, this._new_eye);
-    vec3.add(this._new_eye, earth.pos_vec3, this.eye_vec3)
-    copyVec3ToObj(this.eye_vec3, this.eye)
+    vec3.add(this._new_eye, earth.pos_vec3, this.eye_vec3);
+    copyVec3ToObj(this.eye_vec3, this.eye);
 
     // next handle a possible yaw rotation to look left or right of Earth in the ecliptic plane
     this._rot_quat = quat4.axisAngleDegreesCreate(0, 1, 0, this.lookAtYaw);
@@ -249,8 +249,8 @@ earthInSpaceLookAt = {
     // update the look coordinates
     quat4.multiplyVec3(this._rot_quat, this._new_eye, this.look_vec3);
     vec3.subtract(this._new_eye, this.look_vec3, this.look_vec3);
-    vec3.add(this.look_vec3, earth.pos_vec3)
-    copyVec3ToObj(this.look_vec3, this.look)
+    vec3.add(this.look_vec3, earth.pos_vec3);
+    copyVec3ToObj(this.look_vec3, this.look);
   },
   update: function() {
     this.calculateUpdate();
@@ -263,14 +263,14 @@ earthInSpaceLookAt = {
         initial_eye_mat4 = quat4.toMat4(initial_eye_quat);
     this.distance = d;
     mat4.multiplyVec3(initial_eye_mat4, [0, 0,  this.distance], this.initial_eye_vec3);
-    copyVec3ToObj(this.initial_eye_vec3, this.initial_eye)
+    copyVec3ToObj(this.initial_eye_vec3, this.initial_eye);
   },
   initialize: function(scenejs_element) {
     this.calculateInitialEye(earth.radius * 4);
     this.lookAt = SceneJS.withNode(scenejs_element);
     this.update();
   }
-}
+};
 
 earthInSpaceLookAt.yaw = earth.yawedOrbitAngle();
 
@@ -390,17 +390,17 @@ var square_grid = function(scale, segments) {
         points.push(+scale, 0, p);
     }
     return points;
-}
+};
 
 var earth_grid_positions = square_grid(earth.radius * 3, 30);
 var earth_grid_indices = [];
 var earth_grid_points = earth_grid_positions.length / 3;
-for (var i = 0; i < earth_grid_points; i++) { earth_grid_indices.push(i) };
+for (var i = 0; i < earth_grid_points; i++) { earth_grid_indices.push(i); }
 
 var sun_grid_positions = square_grid(sun.radius * 6, 30);
 var sun_grid_indices = [];
 var sun_grid_points = sun_grid_positions.length / 3;
-for (var i = 0; i < sun_grid_points; i++) { sun_grid_indices.push(i) };
+for (var i = 0; i < sun_grid_points; i++) { sun_grid_indices.push(i); }
 
 //
 // Rose Grid
@@ -418,7 +418,7 @@ var rose_grid = function(scale, segments) {
         points.push(-x, 0, -z);
     }
     return points;
-}
+};
 
 var earth_rose_scale = earth.radius * 1.5;
 var earth_rose_grid_positions = rose_grid(earth_rose_scale, 24);
@@ -426,7 +426,7 @@ var earth_rose_grid_indices = [];
 var earth_rose_grid_points = earth_rose_grid_positions.length / 3;
 for (var i = 1; i < earth_rose_grid_points; i += 2) {
     earth_rose_grid_indices.push(i, i+1);
-};
+}
 
 var latitude_rose_scale = earth.radius * 1.25;
 var latitude_rose_grid_positions = rose_grid(latitude_rose_scale, 24);
@@ -434,7 +434,7 @@ var latitude_rose_grid_indices = [];
 var latitude_rose_grid_points = latitude_rose_grid_positions.length / 3;
 for (var i = 1; i < latitude_rose_grid_points; i += 2) {
     latitude_rose_grid_indices.push(0, i, 0, i+1);
-};
+}
 
 //
 // Sun Rays
@@ -459,14 +459,14 @@ var sun_rays = function() {
         angle = a % 180;
     }
     return points;
-}
+};
 
 var sun_ray_positions = sun_rays();
 var sun_ray_indices = [];
 var sun_ray_points = sun_ray_positions.length / 3 - 1;
 for (var i = 0; i < sun_ray_points; i++) {
     sun_ray_indices.push(0, i);
-};
+}
 
 //
 // Initial lookAt: eye
@@ -487,7 +487,7 @@ function update_initial_eye(d) {
         y: initial_eye_vec3[1] + earth.pos.y,
         z: initial_eye_vec3[2] + earth.pos.z
     };
-};
+}
 
 SceneJS.createNode({
     id: "x-label",
@@ -2374,8 +2374,8 @@ SceneJS.setDebugConfigs({
     }
 });
 
-var angle = SceneJS.withNode("rotation")
-var scene = SceneJS.withNode("theScene")
+var angle = SceneJS.withNode("rotation");
+var scene = SceneJS.withNode("theScene");
 
 var look_at = SceneJS.withNode("lookAt");
 
@@ -2396,11 +2396,12 @@ var earth_surface_location_latitude  = SceneJS.withNode("earth-surface-location-
 
 function sampleRender() {
     scene.render();
-};
+}
 
 var updateRate = 30;
 var updateInterval = 1000/updateRate;
-var nextAnimationTime = new Date().getTime(); + updateInterval;
+// at one time, the rhs must have been: Date().getTime() + updateInterval
+var nextAnimationTime = new Date().getTime(); /* + updateInterval; */
 
 //
 // Back Lighting Handler
@@ -2415,10 +2416,10 @@ function backLightHandler() {
         colors = { r: 1.0, g: 1.0, b: 1.0 };
     } else {
         colors = { r: dark_side_light, g: dark_side_light, b: dark_side_light };
-    };
+    }
     backlight_node1.set("color", colors);
     backlight_node2.set("color", colors);
-};
+}
 
 backlight.onchange = backLightHandler;
 backLightHandler();
@@ -2433,8 +2434,8 @@ function earthRotationHandler() {
     if (earth_rotation.checked) {
         clearSolarRadiationLongitudeData();
     } else {
-    };
-};
+    }
+}
 
 earth_rotation.onchange = earthRotationHandler;
 
@@ -2449,8 +2450,8 @@ function earthGridHandler() {
         earth_grid_selector.set("selection", [1]);
     } else {
         earth_grid_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 earth_grid.onchange = earthGridHandler;
 earthGridHandler();
@@ -2465,8 +2466,8 @@ function earthRoseGridHandler() {
         earth_rose_grid_selector.set("selection", [1]);
     } else {
         earth_rose_grid_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 earth_rose_grid.onchange = earthRoseGridHandler;
 earthRoseGridHandler();
@@ -2481,8 +2482,8 @@ function sunGridHandler() {
         sun_grid_selector.set("selection", [1]);
     } else {
         sun_grid_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 sun_grid.onchange = sunGridHandler;
 sunGridHandler();
@@ -2535,11 +2536,11 @@ function sunEarthLineHandler() {
         default:
             sun_earth_line_selector.set("selection", [0]);
             break;
-        };
+        }
     } else {
         sun_earth_line_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 sun_earth_line.onchange = sunEarthLineHandler;
 sunEarthLineHandler();
@@ -2573,8 +2574,8 @@ function sunRiseSetHandler() {
         sunrise_set_selector.set("selection", [1]);
     } else {
         sunrise_set_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 sunrise_set.onchange = sunRiseSetHandler;
 sunRiseSetHandler();
@@ -2591,8 +2592,8 @@ function noonMidnightHandler() {
         noon_midnight_selector.set("selection", [1]);
     } else {
         noon_midnight_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 sun_noon_midnight.onchange = noonMidnightHandler;
 noonMidnightHandler();
@@ -2607,8 +2608,8 @@ function latHourMarkersHandler() {
         lat_hour_markers_selector.set("selection", [1]);
     } else {
         lat_hour_markers_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 lat_hour_markers.onchange = latHourMarkersHandler;
 latHourMarkersHandler();
@@ -2623,8 +2624,8 @@ function sunRaysHandler() {
         sun_rays_selector.set("selection", [1]);
     } else {
         sun_rays_selector.set("selection", [0]);
-    };
-};
+    }
+}
 
 sun_rays.onchange = sunRaysHandler;
 sunRaysHandler();
@@ -2648,7 +2649,7 @@ function setEarthPositionByMon(mon) {
     sunEarthLineHandler();
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
-};
+}
 
 function setEarthPositionByDayNumber(dayNum) {
     earth.updatePositionDayNumber(dayNum);
@@ -2657,7 +2658,7 @@ function setEarthPositionByDayNumber(dayNum) {
     sunEarthLineHandler();
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
-};
+}
 
 var sun_light                 = SceneJS.withNode("sun-light");
 var sun_material              = SceneJS.withNode("sun-material");
@@ -2696,7 +2697,7 @@ function setupEarthInSpace() {
     earth.radius = earth_diameter / 2;
     // earth.km = km / earth.radius;
     // earth.meter = meter /earth.radius;
-    earth_sub_graph_scale.set({ x: 1, y: 1, z: 1})
+    earth_sub_graph_scale.set({ x: 1, y: 1, z: 1});
     // earth_sub_graph._targetNode._setDirty();
 
     // setEarthPositionByDay(earth.day_number)
@@ -2712,24 +2713,25 @@ function setupEarthInSpace() {
         earth_grid.checked = true;
         earthGridHandler();
         was_earth_grid_checked = false;
-    };
+    }
 
     if (was_sunrise_set_checked) {
         sunrise_set.checked = true;
         sunRiseSetHandler();
         was_sunrise_set_checked = false;
-    };
+    }
 
     if (was_sun_earth_line_checked) {
         sun_earth_line.checked = true;
         sunEarthLineHandler();
         was_sun_earth_line_checked = false;
-    };
+    }
 
     earthInSpaceLookAt.update();
-    return
-    look_at.set("up", earthInSpaceLookAt.up);
-};
+    return;
+    // commented out during linting:
+    // look_at.set("up", earthInSpaceLookAt.up);
+}
 
 //
 // Earth in Space Handling
@@ -2739,7 +2741,7 @@ function updateEarthInSpaceLookAt() {
     // background: http://rainwarrior.thenoos.net/dragon/arcball.html
 
     earthInSpaceLookAt.update();
-};
+}
 
 //
 // Surface View Setup
@@ -2763,7 +2765,7 @@ function lat_long_to_cartesian(lat, lon, r) {
     r = r || 1;
     return [-r * Math.cos(lat * deg2rad) * Math.cos(lon * deg2rad),
              r * Math.sin(lat * deg2rad),
-            -r * Math.cos(lat * deg2rad) * Math.sin(lon * deg2rad), 1]
+            -r * Math.cos(lat * deg2rad) * Math.sin(lon * deg2rad), 1];
 }
 
 function lat_long_to_cartesian_corrected_for_tilt(lat, lon, r) {
@@ -2787,11 +2789,11 @@ function lat_long_to_cartesian_corrected_for_tilt(lat, lon, r) {
         case 'mar': q2 = quat4.axisVecAngleDegreesCreate([1, 0, 0], -earth.tilt.angle); break;
         case 'apr': q2 = quat4.axisVecAngleDegreesCreate([0, 0, 1],  earth.tilt.angle); break;
         case 'may': q2 = quat4.axisVecAngleDegreesCreate([0, 0, 1],  earth.tilt.angle); break;
-    };
+    }
 
     // var q2 = quat4.axisVecAngleDegreesCreate(earth_tilt_axis, earth.tilt);
 
-    quat4.multiplyVec3(q2, lat_lon, v2)
+    quat4.multiplyVec3(q2, lat_lon, v2);
 
     // mat4.multiplyVec3(orbit_correction_mat4, v2);
 
@@ -2802,7 +2804,7 @@ function lat_long_to_cartesian_corrected_for_tilt(lat, lon, r) {
     // var m4 = SceneJS._math_newMat4FromQuaternion(earth_tilt_quat_sjs);
     // var v4 = SceneJS._math_mulMat4v4(m4, [lat_lon[0], lat_lon[1], lat_lon[2], 1])
     // return v3;
-};
+}
 
 function lat_long_to_global_cartesian(lat, lon, r) {
     r = r || 1;
@@ -2831,13 +2833,13 @@ function lat_long_to_global_cartesian(lat, lon, r) {
         case 'mar': q2 = quat4.axisVecAngleDegreesCreate([1, 0, 0], -earth.tilt.angle); break;
         case 'apr': q2 = quat4.axisVecAngleDegreesCreate([0, 0, 1],  earth.tilt.angle); break;
         case 'may': q2 = quat4.axisVecAngleDegreesCreate([0, 0, 1],  earth.tilt.angle); break;
-    };
+    }
 
     // var q2 = quat4.axisVecAngleDegreesCreate([0, 0, 1], earth.tilt);
-    quat4.multiplyVec3(q2, lat_lon)
+    quat4.multiplyVec3(q2, lat_lon);
     vec3.scale(lat_lon, earth.radius);
     mat4.multiplyVec3(orbit_correction_mat4, lat_lon);
-    vec3.add(lat_lon, [earth.pos.x, earth.pos.y, earth.pos.z] )
+    vec3.add(lat_lon, [earth.pos.x, earth.pos.y, earth.pos.z] );
     return lat_lon;
 
 
@@ -2851,13 +2853,13 @@ function lat_long_to_global_cartesian(lat, lon, r) {
     // vec3.add(global_lat_lon, [earth.pos.x, earth.pos.y, earth.pos.z] )
     // return global_lat_lon;
 
-};
+}
 
 function calculate_surface_cross(lat, lon) {
-    if (lat == undefined) {
-        var lat = surface.latitude;
-        var lon = surface.longitude;
-    };
+    if (lat === undefined) {
+        lat = surface.latitude;
+        lon = surface.longitude;
+    }
     lat += 90;
     if (lat > 90 ) {
         lat -= surface.latitude * 2;
@@ -2865,12 +2867,12 @@ function calculate_surface_cross(lat, lon) {
     } else if (lat < -90) {
         lat -= surface.latitude * 2;
         lon = -lon;
-    };
+    }
     surface_up_minus_90_vec3 = lat_long_to_cartesian_corrected_for_tilt(lat, lon);
     quat4.multiplyVec3(orbit_correction_quat, surface_up_minus_90_vec3);
     vec3.cross(surface_up_vec3, surface_up_minus_90_vec3, surface_cross_vec3);
     return surface_cross_vec3;
-};
+}
 
 function calculateSurfaceEyeUpLook() {
 
@@ -2900,16 +2902,16 @@ function calculateSurfaceEyeUpLook() {
         eye:  { x: surface_eye_global[0],  y: surface_eye_global[1],  z: surface_eye_global[2]  },
         up:   { x: surface_up_vec3[0],     y: surface_up_vec3[1],     z: surface_up_vec3[2]     },
         look: { x: surface_look_global[0], y: surface_look_global[1], z: surface_look_global[2] },
-    }
+    };
     return lookat;
-};
+}
 
 function calculateSurfacePitchAxis(up, yaw) {
     var pitch_axis = [];
     var yaw_normalized = vec3.normalize(yaw);
     vec3.cross(up, yaw, pitch_axis);
     return pitch_axis;
-};
+}
 
 //
 // inputs:
@@ -2961,9 +2963,9 @@ function updateSurfaceViewLookAt() {
     look_at.set("look",  lookat.look);
     if (debug_view.checked) {
         surface_lookat_bubble_pos.set(lookat.look);
-    };
+    }
     debugLabel();
-};
+}
 
 var was_earth_grid_checked = earth_grid.checked;
 var was_sunrise_set_checked = sunrise_set.checked;
@@ -3022,7 +3024,7 @@ function setupSurfaceView() {
     // update the scenegraph lookAt
     var lookat = calculateSurfaceEyeUpLook();
     earthInSpaceLookAt.update();
-};
+}
 
 
 function updateLookAt() {
@@ -3031,7 +3033,7 @@ function updateLookAt() {
     } else {
         updateEarthInSpaceLookAt();
     }
-};
+}
 
 //
 // Earth In Space/Surface View Handler
@@ -3045,8 +3047,8 @@ function setupViewHandler() {
         setupEarthInSpace();
         updateLookAt();
         document.onkeydown = handleArrowKeysEarthInSpace;
-    };
-};
+    }
+}
 
 surface_view.onchange = setupViewHandler;
 setupViewHandler();
@@ -3070,48 +3072,48 @@ function setLatitude(lat) {
     $("#latitude-slider").data().rangeinput.setValue(surface.latitude);
     clearSolarRadiationLatitudeData();
     infoLabel();
-};
+}
 
 function incrementLatitude() {
     clearSolarRadiationLatitudeData();
     surface.latitude += 1;
     if (surface.latitude > 90) surface.latitude = 90;
     setLatitude(surface.latitude);
-};
+}
 
 function decrementLatitude() {
     clearSolarRadiationLatitudeData();
     surface.latitude -= 1;
     if (surface.latitude < -90) surface.latitude = -90;
     setLatitude(surface.latitude);
-};
+}
 
 function setLongitude(lon) {
     surface.longitude = lon;
     longitude_rotation.set({ angle: surface.longitude + 90 });
     earth_surface_location_longitude.set("rotation", { x: -1.0, y: 0.0, z: 0.0, angle : lon });
     infoLabel();
-};
+}
 
 function incrementLongitude() {
     clearSolarRadiationLongitudeData();
     surface.longitude += 1;
     if (surface.longitude > 180) surface.longitude -= 360;
     setLongitude(surface.longitude);
-};
+}
 
 function decrementLongitude() {
     clearSolarRadiationLongitudeData();
     surface.longitude -= 1;
     if (surface.longitude < -179) surface.longitude += 360;
     setLongitude(surface.longitude);
-};
+}
 
 function incrementYaw(num) {
     earthInSpaceLookAt.yaw += num;
     earthInSpaceLookAt.yaw = modulo(earthInSpaceLookAt.yaw, 360);
     return earthInSpaceLookAt.yaw;
-};
+}
 
 function incrementPitch(num) {
     var pitch = earthInSpaceLookAt.pitch;
@@ -3120,7 +3122,7 @@ function incrementPitch(num) {
     if (pitch < -max_pitch) pitch = -max_pitch;
     earthInSpaceLookAt.pitch = pitch;
     return pitch;
-};
+}
 
 function incrementLookatYaw(num) {
     var yaw = earthInSpaceLookAt.lookAtYaw;
@@ -3128,33 +3130,33 @@ function incrementLookatYaw(num) {
     yaw = modulo(yaw, 360);
     earthInSpaceLookAt.lookAtYaw = yaw;
     return yaw;
-};
+}
 
 function incrementSurfaceYaw(num) {
     surface.yaw += num;
     surface.yaw = modulo(surface.yaw, 360);
     return surface.yaw;
-};
+}
 
 function incrementSurfacePitch(num) {
     surface.pitch += num;
     if (surface.pitch > max_pitch)  surface.pitch =  max_pitch;
     if (surface.pitch < -max_pitch) surface.pitch = -max_pitch;
     return surface.pitch;
-};
+}
 
 function incrementSurfaceLookatYaw(num) {
     surface.lookat_yaw += num;
     surface.lookat_yaw = modulo(surface.lookat_yaw, 360);
     return surface.lookat_yaw;
-};
+}
 
 function incrementSurfaceLookatPitch(num) {
     surface.lookat_pitch += num;
     if (surface.lookat_pitch > max_pitch)  surface.lookat_pitch =  max_pitch;
     if (surface.lookat_pitch < -max_pitch) surface.lookat_pitch = -max_pitch;
     return surface.lookat_pitch;
-};
+}
 
 function mouseDown(event) {
     lastX = event.clientX;
@@ -3169,10 +3171,10 @@ function mouseUp() {
 function modulo(num, mod) {
     if (num < 0) {
         num = mod - (Math.abs(num) % mod);
-    };
+    }
     num = num % mod;
     return num;
-};
+}
 
 function mouseMove(event) {
     if (dragging) {
@@ -3183,7 +3185,7 @@ function mouseMove(event) {
         } else {
             earthInSpaceLookAt.yaw   += (event.clientX - lastX) * -0.2;
             earthInSpaceLookAt.pitch += (event.clientY - lastY) * -0.2;
-        };
+        }
         lastX = event.clientX;
         lastY = event.clientY;
 
@@ -3196,6 +3198,7 @@ the_canvas.addEventListener('mousemove', mouseMove, true);
 the_canvas.addEventListener('mouseup', mouseUp, true);
 
 function handleArrowKeysEarthInSpace(evt) {
+    var increment;
     var distanceIncrementFactor = 40;
     evt = (evt) ? evt : ((window.event) ? event : null);
     if (evt) {
@@ -3220,7 +3223,7 @@ function handleArrowKeysEarthInSpace(evt) {
 
             case 38:                                    // up arrow
                 if (evt.ctrlKey) {
-                    var increment = earthInSpaceLookAt.distance / distanceIncrementFactor;
+                    increment = earthInSpaceLookAt.distance / distanceIncrementFactor;
                     earthInSpaceLookAt.calculateInitialEye(earthInSpaceLookAt.distance - increment);
                     updateLookAt();
                     evt.preventDefault();
@@ -3259,7 +3262,7 @@ function handleArrowKeysEarthInSpace(evt) {
 
             case 40:                                    // down arrow
                 if (evt.ctrlKey) {
-                    var increment = earthInSpaceLookAt.distance / distanceIncrementFactor;
+                    increment = earthInSpaceLookAt.distance / distanceIncrementFactor;
                     earthInSpaceLookAt.calculateInitialEye(earthInSpaceLookAt.distance + increment);
                     updateLookAt();
                     evt.preventDefault();
@@ -3276,9 +3279,9 @@ function handleArrowKeysEarthInSpace(evt) {
                     evt.preventDefault();
                 }
                 break;
-        };
-    };
-};
+        }
+    }
+}
 
 function update_surface_height(d) {
     if (d >= surface.min_height) {
@@ -3295,8 +3298,8 @@ function decrementSurfaceDistance() {
         surface.distance -= 1;
     } else if (surface.distance > 1) {
         surface.distance -= 0.1;
-    };
-};
+    }
+}
 
 function incrementSurfaceDistance() {
     if (surface.distance < 25) {
@@ -3307,8 +3310,8 @@ function incrementSurfaceDistance() {
         surface.distance += 10;
     } else {
         surface.distance += 100;
-    };
-};
+    }
+}
 
 function handleArrowKeysSurfaceView(evt) {
     var distanceIncrementFactor = 30;
@@ -3388,9 +3391,9 @@ function handleArrowKeysSurfaceView(evt) {
                 }
                 updateSurfaceViewLookAt();
                 break;
-        };
-    };
-};
+        }
+    }
+}
 
 //
 // UI Overlaying WebGL canvas
@@ -3398,21 +3401,23 @@ function handleArrowKeysSurfaceView(evt) {
 
 function elementGetX(el) {
     var xpos = 0;
+    // jshint -W041
     while( el != null ) {
         xpos += el.offsetLeft;
         el = el.offsetParent;
     }
     return xpos;
-};
+}
 
 function elementGetY(el) {
     var ypos = 0;
+    // jshint -W041
     while( el != null ) {
         ypos += el.offsetTop;
         el = el.offsetParent;
     }
     return ypos;
-};
+}
 
 var container = document.getElementById("container");
 
@@ -3428,9 +3433,9 @@ var latitude_slider         = document.getElementById("latitude-slider");
 function latitudeSlider() {
     var canvas_properties = the_canvas.getBoundingClientRect();
     var container_properties = container.getBoundingClientRect();
-    latitude_slider_div.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - latitude_slider_div.offsetHeight - 200 + "px"
+    latitude_slider_div.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - latitude_slider_div.offsetHeight - 200 + "px";
     latitude_slider_div.style.left = canvas_properties.right - elementGetX(document.getElementById("content")) - latitude_slider_div.offsetWidth + "px";
-};
+}
 
 latitudeSlider();
 
@@ -3439,7 +3444,7 @@ function latitudeSliderHandler() {
     clearSolarRadiationLatitudeData();
     setLatitude(surface.latitude);
     updateLookAt();
-};
+}
 
 latitude_slider.onchange = latitudeSliderHandler;
 
@@ -3461,7 +3466,7 @@ function debugLabel() {
             debug_content.style.display = "none";
             debug_label.style.opacity = null;
             surface_lookat_bubble_selector.set("selection", [0]);
-        };
+        }
 
         var eye = earthInSpaceLookAt.lookAt.get("eye");
         var look = earthInSpaceLookAt.lookAt.get("look");
@@ -3522,10 +3527,10 @@ function debugLabel() {
 
         var canvas_properties = the_canvas.getBoundingClientRect();
         var container_properties = container.getBoundingClientRect();
-        debug_label.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - debug_label.offsetHeight - 10 + "px"
+        debug_label.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - debug_label.offsetHeight - 10 + "px";
         debug_label.style.left = canvas_properties.right - elementGetX(document.getElementById("content")) - debug_label.offsetWidth + "px";
-    };
-};
+    }
+}
 
 debug_view.onchange = debugLabel;
 
@@ -3535,14 +3540,14 @@ debug_view.onchange = debugLabel;
 
 function earthRotationToDecimalTime(rot) {
     return ((rot % 360 * 2 / 30) + 12) % 24;
-};
+}
 
 function earthRotationToTimeStr24(rot) {
     var time = earthRotationToDecimalTime(rot);
     var time_hours = Math.floor(time);
-    var time_min = Math.floor((time % 1) * 60)
+    var time_min = Math.floor((time % 1) * 60);
     return time_hours + ":" + sprintf("%02f", time_min);
-};
+}
 
 function earthRotationToTimeStr12(rot) {
     var time = earthRotationToDecimalTime(rot);
@@ -3552,22 +3557,22 @@ function earthRotationToTimeStr12(rot) {
     } else {
         am_pm = "AM";
     }
-    if (time_hours == 0) {
+    if (time_hours === 0) {
         time_hours = 12;
     } else if (time_hours > 12) {
         time_hours -= 12;
-    };
-    var time_min = Math.floor((time % 1) * 60)
+    }
+    var time_min = Math.floor((time % 1) * 60);
     return sprintf("%2f:%02f", time_hours, time_min) + " " + am_pm;
-};
+}
 
 function earthRotationToTimeStr(rot) {
     if (time_24h.checked) {
-        return earthRotationToTimeStr24(rot)
+        return earthRotationToTimeStr24(rot);
     } else {
-        return earthRotationToTimeStr12(rot)
+        return earthRotationToTimeStr12(rot);
     }
-};
+}
 
 var info_label   = document.getElementById("info-label");
 var info_view   = document.getElementById("info-view");
@@ -3583,22 +3588,22 @@ function solar_altitude(lat, lon) {
     var zd = center[2] - loc[2];
     var d1 = Math.sqrt(xd * xd + yd * yd + zd * zd);
     var alt = (Math.asin(d1 / 2) * 2 * rad2deg - 90) * -1;
-    return alt
-};
+    return alt;
+}
 
 function solar_flux() {
     return earth_ephemerides_solar_constant_by_day_number(earth.day_number);
-};
+}
 
 function simpleSolarRadiation(alt) {
     var result = solar_flux() * Math.sin(alt * deg2rad) * SOLAR_FACTOR_AM1;
     return result < 0 ? 0 : result;
-};
+}
 
 function useAirMNassHandler() {
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
-};
+}
 
 use_airmass.onchange = useAirMNassHandler;
 
@@ -3620,14 +3625,14 @@ use_airmass.onchange = useAirMNassHandler;
 function useDiffuseCorrectionHandler() {
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
-};
+}
 
 use_diffuse_correction.onchange = useDiffuseCorrectionHandler;
 
 function useHorizontalFluxHandler() {
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
-};
+}
 
 use_horizontal_flux.onchange = useHorizontalFluxHandler;
 
@@ -3637,7 +3642,7 @@ function spectralSolarRadiation(alt) {
         radiation = totalHorizontalDirectInsolation(earth.day_number, alt);
     } else {
         radiation = totalDirectInsolation(earth.day_number, alt);
-    };
+    }
     if (use_diffuse_correction.checked) {
         radiation.total = radiation.total * DIFFUSE_CORRECTION_FACTOR;
         radiation.red   = radiation.red   * DIFFUSE_CORRECTION_FACTOR;
@@ -3653,19 +3658,19 @@ function spectralSolarRadiation(alt) {
         sun_light.set("color", normalized);
         sun_material.set("baseColor", normalized);
         sun_material.set("specularColor", normalized);
-    };
+    }
     return radiation;
-};
+}
 
 function solarRadiation(alt) {
     var radiation, rad, flags;
     if (surface_view.checked) {
         flags = atmosphere_transparent.get('flags');
-    };
+    }
     if (alt > 0) {
         if (surface_view.checked) {
             flags.transparent = true;
-        };
+        }
         if (use_airmass.checked) {
             radiation = spectralSolarRadiation(alt);
             if (surface_view.checked) {
@@ -3675,32 +3680,32 @@ function solarRadiation(alt) {
                 atmosphere_material.set("alpha", alpha);
                 atmosphere_material.set("emit", alpha);
                 milky_way_material.set("emit", (alpha - 0.5) * -0.5);
-            };
+            }
 
             rad = radiation.total;
         } else {
             if (surface_view.checked) {
                 atmosphere_material.set("alpha", 0);
-            };
+            }
             if (use_horizontal_flux.checked) {
                 rad = simpleSolarRadiation(alt);
             } else {
                 rad = simpleSolarRadiation(90);
-            };
-        };
+            }
+        }
     } else {
         if (surface_view.checked) {
             flags.transparent = true;
             atmosphere_material.set("alpha", 0);
             milky_way_material.set("emit", 0.8);
-        };
+        }
         rad = 0;
-    };
+    }
     if (surface_view.checked) {
         atmosphere_transparent.set('flags', flags);
-    };
-    return rad
-};
+    }
+    return rad;
+}
 
 function infoLabel() {
     if (info_label) {
@@ -3710,10 +3715,14 @@ function infoLabel() {
         } else {
             info_content.style.display = "none";
             info_label.style.opacity = null;
-        };
+        }
 
+        // Apparently side-effect-free expressions that were probably once variable initializers;
+        // removed during linting:
+        /*
         earth.pos.y + Math.sin((surface.latitude - earth.tilt.angle)  * deg2rad) * earth.radius,
         earth.pos.z + Math.sin(-surface.longitude * deg2rad) * earth.radius
+        */
 
         var solar_alt = solar_altitude(surface.latitude, surface.longitude);
         var solar_rad = solarRadiation(solar_alt);
@@ -3736,8 +3745,8 @@ function infoLabel() {
         // info_label.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - info_label.offsetHeight - 24 + "px";
         info_label.style.top = canvas_properties.top + window.pageYOffset + 5 + "px";
         info_label.style.left = elementGetX(the_canvas) - elementGetX(document.getElementById("content")) + 15 + "px";
-    };
-};
+    }
+}
 
 info_view.onchange = infoLabel;
 
@@ -3753,8 +3762,8 @@ function controlsLabel() {
         var container_properties = container.getBoundingClientRect();
         controls_label.style.top = canvas_properties.top + window.pageYOffset + 45 + "px";
         controls_label.style.left = elementGetX(the_canvas) - elementGetX(document.getElementById("content")) + 15 + "px";
-    };
-};
+    }
+}
 
 //
 // Info Graph
@@ -3782,7 +3791,7 @@ function infoGraph() {
             info_graph.style.opacity = 1.0;
         } else {
             info_graph.style.opacity = null;
-        };
+        }
 
         updateSolarAltitudeGraph();
         updateSolarRadiationLatitudeGraph();
@@ -3792,10 +3801,10 @@ function infoGraph() {
         var canvas_properties = the_canvas.getBoundingClientRect();
         var container_properties = container.getBoundingClientRect();
         // info_graph.style.top = canvas_properties.top + window.pageYOffset + 5 + "px";
-        info_graph.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - info_graph.offsetHeight - 10 + "px"
+        info_graph.style.top = canvas_properties.top + window.pageYOffset + canvas_properties.height - info_graph.offsetHeight - 10 + "px";
         info_graph.style.left = elementGetX(the_canvas) - elementGetX(document.getElementById("content")) + startingXpos + "px";
-    };
-};
+    }
+}
 
 graph_view.onchange = infoGraph;
 
@@ -3828,7 +3837,7 @@ function drawSolarAltitudeGraph() {
         alt_ctx.moveTo(0, graph_base);
         alt_ctx.lineTo(x, y);
         alt_ctx.stroke();
-    };
+    }
 
     alt_ctx.lineWidth = 2;
     alt_ctx.strokeStyle = "rgba(0,255,0, 1.0)";
@@ -3844,7 +3853,7 @@ function drawSolarAltitudeGraph() {
     alt_ctx.fillText(sprintf("Lat: %3.0f ", surface.latitude) + ", Time: " + earthRotationToTimeStr(earth.rotation - surface.longitude), 0, 12);
     alt_ctx.fillText(sprintf("Solar Altitude: %2.0f degrees", solar_alt), 0, 26);
     alt_ctx.fillText("Height of Sun in sky", 0, graph_base+28);
-};
+}
 
 function updateSolarAltitudeGraph() {
     if (solar_altitude_graph.checked) {
@@ -3855,20 +3864,20 @@ function updateSolarAltitudeGraph() {
         altitude_graph_canvas.width = 1;
         altitude_graph_canvas.height = 1;
         altitude_graph_canvas.style.display = null;
-    };
-};
+    }
+}
 
 function solarAltitudeGraphHandler() {
     updateSolarAltitudeGraph();
     if (solar_altitude_graph.checked) {
         graph_view.checked = true;
     } else {
-        if (solar_radiation_latitude_graph.checked == false) {
+        if ( ! solar_radiation_latitude_graph.checked) {
             graph_view.checked = false;
-        };
-    };
+        }
+    }
     infoGraph();
-};
+}
 
 //
 // Solar Radiation Latitude Graph Handler
@@ -3878,8 +3887,8 @@ var solarRadiationLatitudeData = new Array(240);
 function clearSolarRadiationLatitudeData() {
     for (var i= 0; i < solarRadiationLatitudeData.length; i++) {
         solarRadiationLatitudeData[i] = 0;
-    };
-};
+    }
+}
 
 clearSolarRadiationLatitudeData();
 
@@ -3887,9 +3896,9 @@ function totalSolarRadiationLatitudeData() {
     var total = 0;
     for (var i= 0; i < solarRadiationLatitudeData.length; i++) {
         total += solarRadiationLatitudeData[i] / 10;
-    };
+    }
     return total;
-};
+}
 
 function drawSolarRadiationLatitudeGraph() {
     var solar_alt = solar_altitude(surface.latitude, surface.longitude);
@@ -3918,7 +3927,7 @@ function drawSolarRadiationLatitudeGraph() {
             rad_lat_ctx.strokeStyle = "rgba(255,0,0, 1.0)";
         } else {
             rad_lat_ctx.strokeStyle = "rgba(255,255,0, 1.0)";
-        };
+        }
 
         rad_lat_ctx.beginPath();
         rad_lat_ctx.moveTo(x0, y0);
@@ -3937,12 +3946,12 @@ function drawSolarRadiationLatitudeGraph() {
         y_grid_px = y_grid_value * -y_factor + graph_height - graph_base_offset;
         rad_lat_ctx.moveTo(0, y_grid_px);
         rad_lat_ctx.lineTo(graph_width, y_grid_px);
-    };
+    }
     y_grid_px = 1000 * -y_factor + graph_height - (graph_base_offset + 2);
     for (x = x_tic_increment * 2; x <= graph_width; x += x_tic_increment * 2) {
         rad_lat_ctx.moveTo(x, graph_base);
         rad_lat_ctx.lineTo(x, y_grid_px);
-    };
+    }
     rad_lat_ctx.stroke();
 
     // X axis
@@ -3955,7 +3964,7 @@ function drawSolarRadiationLatitudeGraph() {
     for (x = x_tic_increment; x < graph_width; x += x_tic_increment) {
         rad_lat_ctx.moveTo(x, graph_base);
         rad_lat_ctx.lineTo(x, graph_base + 3);
-    };
+    }
     rad_lat_ctx.moveTo(1, graph_base);
     rad_lat_ctx.lineTo(1, graph_base + 5);
     rad_lat_ctx.moveTo(graph_width / 2, graph_base);
@@ -3975,7 +3984,7 @@ function drawSolarRadiationLatitudeGraph() {
         y_grid_px = y_grid_value * -y_factor + graph_height - graph_base_offset;
         rad_lat_ctx.moveTo(0, y_grid_px);
         rad_lat_ctx.lineTo(4, y_grid_px);
-    };
+    }
     rad_lat_ctx.stroke();
 
     rad_lat_ctx.font = "bold 12px sans-serif";
@@ -3985,7 +3994,7 @@ function drawSolarRadiationLatitudeGraph() {
     rad_lat_ctx.fillText(sprintf("total: %3.1f kWh/m2", totalSolarRadiationLatitudeData() / 1000), 4, 40);
     rad_lat_ctx.fillText("noon", graph_width / 2 - 14, graph_base+16);
     rad_lat_ctx.fillText("Solar radiation over 24 hours", 0, graph_base+28);
-};
+}
 
 function updateSolarRadiationLatitudeGraph() {
     if (solar_radiation_latitude_graph.checked) {
@@ -3996,8 +4005,8 @@ function updateSolarRadiationLatitudeGraph() {
         radiation_lat_graph_canvas.width = 1;
         radiation_lat_graph_canvas.height = 1;
         radiation_lat_graph_canvas.style.display = null;
-    };
-};
+    }
+}
 
 function solarRadiationLatitudeGraphHandler() {
     updateSolarRadiationLatitudeGraph();
@@ -4005,12 +4014,12 @@ function solarRadiationLatitudeGraphHandler() {
         graph_view.checked = true;
     } else {
         solar_radiation_latitude_graph.style.display = null;
-        if (solar_altitude_graph.checked == false && solar_radiation_longitude_graph.checked == false) {
+        if ( ! solar_altitude_graph.checked && ! solar_radiation_longitude_graph.checked) {
             graph_view.checked = false;
-        };
-    };
+        }
+    }
     infoGraph();
-};
+}
 
 //
 // Solar Radiation Longitude Graph Handler
@@ -4030,17 +4039,17 @@ function clearSolarRadiationLongitudeData() {
         if (solarRadiationLongitudeDataClearedCount && multipleSolarRadiationLongitudeData) {
             for (i= 0; i < solarRadiationLongitudeData.length; i++) {
                 solarRadiationLongitudeDataOld[i] =  solarRadiationLongitudeData[i];
-            };
+            }
             significantOldSolarRadiationLongitudeData = true;
-        };
+        }
         for (i= 0; i < solarRadiationLongitudeData.length; i++) {
             solarRadiationLongitudeData[i] = 0;
-        };
+        }
         solarRadiationLongitudeDataNew = false;
         multipleSolarRadiationLongitudeData = false;
         solarRadiationLongitudeDataClearedCount++;
     }
-};
+}
 
 clearSolarRadiationLongitudeData();
 
@@ -4054,7 +4063,7 @@ function drawSolarRadiationLongitudeGraph() {
         multipleSolarRadiationLongitudeData = true;
     } else {
         solarRadiationLongitudeDataNew = true;
-    };
+    }
 
     var rad_lon_ctx = radiation_lon_graph_canvas.getContext('2d');
     rad_lon_ctx.clearRect(0,0,graph_width,graph_height);
@@ -4075,10 +4084,10 @@ function drawSolarRadiationLongitudeGraph() {
             y1 = solarRadiationLongitudeDataOld[x] * -y_factor + graph_height - graph_base_offset;
             rad_lon_ctx.moveTo(x0, y1 - 1);
             rad_lon_ctx.lineTo(x0, y1 + 1);
-        };
+        }
         rad_lon_ctx.stroke();
         rad_lon_ctx.closePath();
-    };
+    }
 
     rad_lon_ctx.lineWidth = 2;
     var x, x0, y0, x1, y1;
@@ -4098,8 +4107,8 @@ function drawSolarRadiationLongitudeGraph() {
             rad_lon_ctx.moveTo(x0, y1 - 1);
             rad_lon_ctx.lineTo(x0, y1 + 1);
             rad_lon_ctx.stroke();
-        };
-    };
+        }
+    }
 
     // grid lines
     var x_tic_increment = graph_width / 12;
@@ -4112,12 +4121,12 @@ function drawSolarRadiationLongitudeGraph() {
         y_grid_px = y_grid_value * -y_factor + graph_height - graph_base_offset;
         rad_lon_ctx.moveTo(0, y_grid_px);
         rad_lon_ctx.lineTo(graph_width, y_grid_px);
-    };
+    }
     y_grid_px = 1000 * -y_factor + graph_height - (graph_base_offset + 2);
     for (x = x_tic_increment * 2; x <= graph_width; x += x_tic_increment * 2) {
         rad_lon_ctx.moveTo(x, graph_base);
         rad_lon_ctx.lineTo(x, y_grid_px);
-    };
+    }
     rad_lon_ctx.stroke();
 
     // X axis
@@ -4126,11 +4135,11 @@ function drawSolarRadiationLongitudeGraph() {
     rad_lon_ctx.strokeStyle = "rgba(0,255,0, 1.0)";
     rad_lon_ctx.moveTo(0, graph_base);
     rad_lon_ctx.lineTo(graph_width, graph_base);
-    var x_tic_increment = graph_width / 12;
+    x_tic_increment = graph_width / 12;
     for (x = x_tic_increment; x < graph_width; x += x_tic_increment) {
         rad_lon_ctx.moveTo(x, graph_base);
         rad_lon_ctx.lineTo(x, graph_base + 3);
-    };
+    }
     rad_lon_ctx.moveTo(1, graph_base);
     rad_lon_ctx.lineTo(1, graph_base + 5);
     rad_lon_ctx.moveTo(graph_width / 2, graph_base);
@@ -4150,7 +4159,7 @@ function drawSolarRadiationLongitudeGraph() {
         y_grid_px = y_grid_value * -y_factor + graph_height - graph_base_offset;
         rad_lon_ctx.moveTo(0, y_grid_px);
         rad_lon_ctx.lineTo(4, y_grid_px);
-    };
+    }
     rad_lon_ctx.stroke();
 
 
@@ -4160,7 +4169,7 @@ function drawSolarRadiationLongitudeGraph() {
     rad_lon_ctx.fillText(sprintf("Solar Rad: %3.0f  W/m2", solar_rad), 0, 26);
     rad_lon_ctx.fillText("equator", graph_width / 2 - 18, graph_base+16);
     rad_lon_ctx.fillText("Solar radiation right now", graph_width / 2 - 70, graph_base+28);
-};
+}
 
 function updateSolarRadiationLongitudeGraph() {
     if (solar_radiation_longitude_graph.checked) {
@@ -4171,8 +4180,8 @@ function updateSolarRadiationLongitudeGraph() {
         radiation_lon_graph_canvas.width = 1;
         radiation_lon_graph_canvas.height = 1;
         radiation_lon_graph_canvas.style.display = null;
-    };
-};
+    }
+}
 
 function solarRadiationLongitudeGraphHandler() {
     updateSolarRadiationLongitudeGraph();
@@ -4180,12 +4189,12 @@ function solarRadiationLongitudeGraphHandler() {
         graph_view.checked = true;
     } else {
         solar_radiation_longitude_graph.style.display = null;
-        if (solar_altitude_graph.checked == false && solar_radiation_latitude_graph.checked == false) {
+        if ( ! solar_altitude_graph.checked && ! solar_radiation_latitude_graph.checked) {
             graph_view.checked = false;
-        };
-    };
+        }
+    }
     infoGraph();
-};
+}
 
 solar_altitude_graph.onchange = solarAltitudeGraphHandler;
 solarAltitudeGraphHandler();
@@ -4203,7 +4212,7 @@ function getRadioSelection(form_element) {
         }
     }
     return false;
-};
+}
 
 
 var earth_texture_selector = SceneJS.withNode("earthTextureSelector");
@@ -4226,7 +4235,7 @@ for (var c = 0; c < cities.length; c++) {
     } else {
       active_cities.push(cities[c]);
     }
-};
+}
 
 for (var i = 0; i < active_cities.length; i++) {
     city_option = document.createElement('option');
@@ -4235,7 +4244,7 @@ for (var i = 0; i < active_cities.length; i++) {
     city_option.value = i;
     city_option.textContent = city.name + ', ' + city.country;
     selected_city.appendChild(city_option);
-};
+}
 
 function selectedCityHandler() {
     var city_index = Number(selected_city.value);
@@ -4243,7 +4252,7 @@ function selectedCityHandler() {
     var city_location = city.location;
     setLatitude(city_location.signed_latitude);
     setLongitude(city_location.signed_longitude);
-};
+}
 
 selected_city.onchange = selectedCityHandler;
 
@@ -4253,8 +4262,8 @@ var next_month = document.getElementById("next-month");
 
 function chooseMonthHandler(event) {
     var mon = choose_month.value;
-    setEarthPositionByMon(mon)
-};
+    setEarthPositionByMon(mon);
+}
 
 choose_month.onchange = chooseMonthHandler;
 
@@ -4328,7 +4337,7 @@ function chooseTiltHandler() {
         case "no":
             earth.tilt.angle = 0;
             break;
-    };
+    }
     // earth.tilt.axis_vec3
     earth_tilt_quat = quat4.axisVecAngleDegreesCreate(earth.tilt.axis_vec3,  earth.tilt.angle);
     // earth_tilt_quat = quat4.axisAngleDegreesCreate(0, 0, 1,  earth.tilt.angle);
@@ -4337,13 +4346,13 @@ function chooseTiltHandler() {
     clearSolarRadiationLatitudeData();
     clearSolarRadiationLongitudeData();
     infoLabel();
-};
+}
 
 choose_tilt.onchange = chooseTiltHandler;
 
-// 
+//
 // earth.updatePosition(initial_earth_pos_vec3);
-// 
+//
 
 //
 // Animation
@@ -4357,14 +4366,14 @@ function sampleAnimate(t) {
         if (earth_rotation.checked) {
             angle.set("angle", earth.rotation += 0.25);
             clearSolarRadiationLongitudeData();
-        };
+        }
         updateLookAt();
         sampleRender();
         if (debug_view.checked) debugLabel();
         infoLabel();
         infoGraph();
     }
-};
+}
 
 var displayed = false;
 
