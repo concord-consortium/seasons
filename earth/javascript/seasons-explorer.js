@@ -2785,7 +2785,7 @@ function lat_long_to_global_cartesian(lat, lon, r) {
     // var q2 = quat4.axisVecAngleDegreesCreate([0, 0, 1], earth.tilt);
     quat4.multiplyVec3(q2, lat_lon);
     vec3.scale(lat_lon, earth.radius);
-    mat4.multiplyVec3(orbit_correction_mat4, lat_lon);
+    mat4.multiplyVec3(earth.orbit_correction_mat4, lat_lon);
     vec3.add(lat_lon, [earth.pos.x, earth.pos.y, earth.pos.z] );
     return lat_lon;
 
@@ -2816,7 +2816,7 @@ function calculate_surface_cross(lat, lon) {
         lon = -lon;
     }
     surface_up_minus_90_vec3 = lat_long_to_cartesian_corrected_for_tilt(lat, lon);
-    quat4.multiplyVec3(orbit_correction_quat, surface_up_minus_90_vec3);
+    quat4.multiplyVec3(earth.orbit_correction_quat, surface_up_minus_90_vec3);
     vec3.cross(surface_up_vec3, surface_up_minus_90_vec3, surface_cross_vec3);
     return surface_cross_vec3;
 }
@@ -2827,7 +2827,7 @@ function calculateSurfaceEyeUpLook() {
     surface_dir_vec3 = lat_long_to_cartesian_corrected_for_tilt(surface.latitude, surface.longitude);
 
     // quat4.multiplyVec3(earth_orbit_correction_quat, surface_dir_vec3);
-    quat4.multiplyVec3(orbit_correction_quat, surface_dir_vec3);
+    quat4.multiplyVec3(earth.orbit_correction_quat, surface_dir_vec3);
 
     // generate an up axis direction vector for the lookAt (integrates tilt)
     surface_up_vec3 = vec3.create(surface_dir_vec3);
