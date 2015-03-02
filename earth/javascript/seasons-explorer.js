@@ -25,6 +25,55 @@
     totalHorizontalDirectInsolation: false,
 */
 
+/*
+  Extracted list of DOM IDs referenced:
+
+    altitude-graph-canvas
+    backlight
+    choose-month
+    choose-tilt
+    content
+    controls-label
+    debug-content
+    debug-label
+    debug-view
+    earth-grid
+    earth-rose-grid
+    earth-rotation
+    graph-view
+    info-content
+    info-graph
+    info-label
+    info-view
+    lat-hour-markers
+    latitude-slider
+    latitude-slider-div
+    lookat-noon
+    lookat-northpole
+    lookat-southpole
+    lookat-sunrise
+    lookat-sunset
+    next-month
+    previous-month
+    radiation-lat-graph-canvas
+    radiation-lon-graph-canvas
+    selected-city
+    solar-altitude-graph
+    solar-radiation-latitude-graph
+    solar-radiation-longitude-graph
+    sun-earth-line
+    sun-grid
+    sun-noon-midnight
+    sun-rays
+    sun-rise-set
+    surface-view
+    theCanvas
+    time-24h
+    use-airmass
+    use-diffuse-correction
+    use-horizontal-flux
+*/
+
 (function() {
 "use strict";
 
