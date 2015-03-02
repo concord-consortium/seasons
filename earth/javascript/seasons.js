@@ -1,3 +1,4 @@
+// jshint unused: true
 (function() {
 
 var seasons = {};
@@ -7,13 +8,6 @@ seasons.VERSION = '0.1.0';
 //
 // Utilities ...
 //
-
-function bind(scope, fn) {
-    return function () {
-        fn.apply(scope, arguments);
-    };
-}
-
 
 function getRadioSelection (form_element) {
     for(var i = 0; i < form_element.elements.length; i++) {
@@ -273,14 +267,8 @@ seasons.Scene = function(options) {
     // Mouse interaction bits ...
     //
 
-    this.earth_lastX;
-    this.earth_lastY;
-
     this.earth_yaw          = normalized_initial_earth_eye.x;
     this.earth_pitch        = normalized_initial_earth_eye.y;
-
-    this.sun_lastX;
-    this.sun_lastY;
 
     this.sun_yaw            = 0;
     this.sun_pitch          = 0;
@@ -498,7 +486,7 @@ seasons.Scene.prototype.updateSpaceshipPosition = function() {
     }
 };
 
-seasons.Scene.prototype.mouseDown = function(event, element) {
+seasons.Scene.prototype.mouseDown = function(event) {
     switch(this.look_at_selection) {
         case "orbit":
             this.sun_lastX = event.clientX;
@@ -514,12 +502,12 @@ seasons.Scene.prototype.mouseDown = function(event, element) {
     this.canvas.style.cursor = "pointer";
 };
 
-seasons.Scene.prototype.mouseUp = function(event, element) {
+seasons.Scene.prototype.mouseUp = function() {
     this.dragging = false;
 };
 
 
-seasons.Scene.prototype.mouseOut = function(event, element) {
+seasons.Scene.prototype.mouseOut = function() {
     this.dragging = false;
 };
 
@@ -538,13 +526,12 @@ seasons.Scene.prototype.incrementSunPitch = function(num) {
 };
 
 
-seasons.Scene.prototype.mouseMove = function(event, element, new_yaw, new_pitch, linked) {
+seasons.Scene.prototype.mouseMove = function(event, element, new_yaw, new_pitch) {
     if (this.dragging) {
 
         this.canvas.style.cursor = "pointer";
-        var look, eye, eye4, neweye;
+        var eye4, neweye;
         var up_downQ, up_downQM, left_rightQ, left_rightQM;
-        var f, up_down_axis, angle;
 
         var normalized_eye;
         var constrain_navigation = (typeof CONSTRAIN_NAVIGATION !== 'undefined') && CONSTRAIN_NAVIGATION;
@@ -689,27 +676,9 @@ seasons.Scene.prototype.elementGetY = function(el) {
 };
 
 seasons.Scene.prototype.earthLabel = function() {
-    var getY = function getY(el) {
-        var ypos = 0;
-        while( el !== null ) {
-            ypos += el.offsetTop;
-            el = el.offsetParent;
-        }
-        return ypos;
-    };
-    var getX = function getX(el) {
-        var xpos = 0;
-        while( el !== null ) {
-            xpos += el.offsetLeft;
-            el = el.offsetParent;
-        }
-        return xpos;
-    };
-
     if (this.earth_label) {
 
         var edist = earth_ellipse_distance_from_sun_by_month(this.month);
-        var solar_flux = earth_ephemerides_solar_constant_by_month(this.month);
         var labelStr = this.month_data[this.month].long_name + " ";
         labelStr += sprintf("Earth Distance: %3.1f million km<br>", edist * scale_factor / 1000000);
         // labelStr += sprintf("Solar Radiation:  %4.1f W/m2<br>", solar_flux);
@@ -838,7 +807,7 @@ seasons.Scene.prototype.setEarthSunLine = function() {
 };
 
 
-seasons.Scene.prototype.timeOfYearChange = function(form_element) {
+seasons.Scene.prototype.timeOfYearChange = function() {
     this._timeOfYearChange(this.choose_month.value);
 };
 
@@ -915,8 +884,6 @@ seasons.Scene.prototype._orbitalGridChange = function(orbital_grid) {
         this.linked_scene._orbitalGridChange(orbital_grid);
     }
 };
-
-var seasonsActivity = {};
 
 seasons.Activity = function(options) {
     self = this;
