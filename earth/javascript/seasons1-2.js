@@ -1315,7 +1315,7 @@ function seasonsRender() {
 
 var earth_rotation = document.getElementById("earth-rotation");
 
-function seasonsAnimate(t) {
+function seasonsAnimate() {
     sampleTime = new Date().getTime();
     if (keepAnimating) requestAnimFrame(seasonsAnimate);
     if (sampleTime > nextAnimationTime) {
@@ -1342,7 +1342,7 @@ window.requestAnimFrame = (function() {
          window.mozRequestAnimationFrame ||
          window.oRequestAnimationFrame ||
          window.msRequestAnimationFrame ||
-         function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+         function(/* function FrameRequestCallback */ callback) {
            window.setTimeout(callback, 1000/60);
          };
 })();
@@ -1489,7 +1489,6 @@ function chooseMonthLogger(month) {
   seasons_activity.logInteraction({ "choose month": month });
 }
 
-var city_data_table = document.getElementById("city-data-table");
 var city_data_table_body = document.getElementById("city-data-table-body");
 
 var table_row, table_data;
@@ -1527,7 +1526,6 @@ function addExperimentData() {
     }
     var city_index = Number(selected_city_latitude.value);
     var city = active_cities[city_index];
-    var city_location = city.location;
 
     var the_month = scene1.month;
     var month = month_data[the_month];
@@ -1612,7 +1610,7 @@ function addExperimentData() {
     table_data.appendChild(graph_checkbox);
     table_row.appendChild(table_data);
 
-    var graph_checkbox_callback = function(event) {
+    var graph_checkbox_callback = function() {
         _graph_checkbox_callback(this);
     };
 
@@ -1640,7 +1638,6 @@ function _graph_checkbox_callback(element) {
     var city_index = graph_id_parts[2];
     var city_data = city_data_to_plot[city_index];
     var city = active_cities[city_index];
-    var city_location = city.location;
     var month = month_data[graph_id_parts[5]];
     var temperature = city.average_temperatures[month.index];
     if (use_fahrenheit) temperature = temperature * 9 / 5 + 32;
@@ -1660,7 +1657,6 @@ function justUpdateResults() {
   }
   var city_index = Number(selected_city_latitude.value);
   var city = active_cities[city_index];
-  var city_location = city.location;
 
   var the_month = scene1.month;
   var month = month_data[the_month];
@@ -1762,7 +1758,7 @@ function experimentDataFromJSON(exp_table) {
 
         // Could almost surely be moved out of the loop. Meanwhile...
         //jshint -W083
-        var graph_checkbox_callback = function(event) {
+        var graph_checkbox_callback = function() {
             _graph_checkbox_callback(this);
         };
         //jshint +W083
@@ -1804,7 +1800,7 @@ if (!use_fahrenheit) {
 }
 
 function plotCityData() {
-    var f = Flotr.draw($('theCanvas4'), city_data_to_plot,
+    Flotr.draw($('theCanvas4'), city_data_to_plot,
 
       {
         xaxis:{
@@ -1879,335 +1875,6 @@ function generateCityColorKeys() {
 
 if (!LITE_VERSION) { generateCityColorKeys(); }
 
-var dark_green = '#355506';
-
-function plotSolarRadiationAndEarthDistanceGraph() {
-    var d1 = [];
-    var d2 = [];
-
-    for(var i = 0; i < 12; i++) {
-        d1.push([i + 1, earth_ephemerides_solar_constant_by_month(monthNamesShort[i])]);
-        d2.push([i + 1,
-
-            earth_ephemerides_distance_from_sun_by_month(monthNamesShort[i]) / 1000000 / factor]);
-    }
-
-    var f = Flotr.draw(
-        $('theCanvas4'),[
-
-        {data:d1, label:'W/m2', lines: {show: false}, points: {show: true}},
-
-        {data:d2, label:'Million km', yaxis:2, lines: {show: false}, points: {show: true}},
-
-        ],{
-            title: "Earth's Solar Radiation and Distance from the Sun",
-            subtitle: "Solar Radiation Measured outside the atmosphere.",
-            xaxis:{
-                ticks: [1, 3, 6, 9, 12],
-                // tickFormatter: function(n){ return '('+n+')'; }, // => displays tick values between brackets.
-                tickFormatter: function(n) {
-
-                    var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel;
-
-                }, // => displays tick values between brackets.
-                min: 1,
-                max: 12,
-                labelsAngle: 45,
-                title: 'Season'
-            },
-            yaxis:{
-                ticks: [1300, 1350, 1400, 1450, 1500],
-                min: 1300,
-                max: 1500,
-                title: 'Solar Radiation (W/m2)'
-            },
-            y2axis: {
-                color: dark_green,
-
-                ticks: [140, 145, 150, 155, 160],
-                min: 140,
-                max: 160,
-
-                title: 'Distance from Sun (Million km)'
-            },
-			grid:{
-				verticalLines: true,
-				backgroundColor: 'white'
-			},
-
-            HtmlText: false,
-            legend: {
-                position: 'nw'
-            },
-
-            mouse:{
-				track: true,
-				lineColor: 'purple',
-				relative: true,
-				position: 'nw',
-				sensibility: 1, // => The smaller this value, the more precise you've to point
-				trackDecimals: 1,
-                trackFormatter: function(obj) {
-                    var monthName = monthNamesShort[Number(obj.x - 1)];
-                    monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
-                }
-			},
-			crosshair:{
-				mode: 'xy'
-			}
-        });
-}
-
-function plotSolarRadiationGraph() {
-    var d1 = [];
-    var d2 = [[0,0]];
-
-    for(var i = 0; i < 12; i++) {
-        d1.push([i + 1, earth_ephemerides_solar_constant_by_month(monthNamesShort[i])]);
-        // d2.push([i + 1,
-
-        //     earth_ephemerides_distance_from_sun_by_month(monthNamesShort[i]) / 1000000 / factor]);
-    }
-
-    var f = Flotr.draw(
-        $('theCanvas4'),[
-
-        {data:d1, label:'W/m2', lines: {show: false}, points: {show: true}},
-
-        {data:d2, label:'Million km', yaxis:2, lines: {show: false}, points: {show: true}},
-
-        ],{
-            title: "Earth's Solar Radiation",
-            subtitle: "Solar Radiation Measured outside the atmosphere.",
-            xaxis:{
-                ticks: [1, 3, 6, 9, 12],
-                tickFormatter: function(n) {
-
-                    var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel;
-
-                },
-                min: 1,
-                max: 12,
-                labelsAngle: 45,
-                title: 'Season'
-            },
-            yaxis:{
-                ticks: [1300, 1350, 1400, 1450, 1500],
-                min: 1300,
-                max: 1500,
-                title: 'Solar Radiation (W/m2)'
-            },
-            y2axis: {
-                color: dark_green,
-
-                ticks: [140, 145, 150, 155, 160],
-                min: 140,
-                max: 160,
-
-                title: 'Distance from Sun (Million km)'
-            },
-			grid:{
-				verticalLines: true,
-				backgroundColor: 'white'
-			},
-
-            HtmlText: false,
-            legend: {
-                position: 'nw'
-            },
-
-            mouse:{
-				track: true,
-				lineColor: 'purple',
-				relative: true,
-				position: 'nw',
-				sensibility: 1, // => The smaller this value, the more precise you've to point
-				trackDecimals: 1,
-                trackFormatter: function(obj) {
-
-                    var monthName = monthNamesShort[Number(obj.x - 1)];
-                    monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
-                }
-			},
-			crosshair:{
-				mode: 'xy'
-			}
-        });
-}
-
-function plotEarthDistanceGraph() {
-    var d1 = [[0,0]];
-    var d2 = [];
-
-    for(var i = 0; i < 12; i++) {
-        // d1.push([i + 1, earth_ephemerides_solar_constant_by_month(monthNamesShort[i])]);
-        d2.push([i + 1,
-
-            earth_ephemerides_distance_from_sun_by_month(monthNamesShort[i]) / 1000000 / factor]);
-    }
-
-    var f = Flotr.draw(
-        $('theCanvas4'),[
-
-        {data:d1, label:'W/m2', lines: {show: false}, points: {show: true}},
-
-        {data:d2, label:'Million km', yaxis:2, lines: {show: false}, points: {show: true}},
-
-        ],{
-            title: "Earth's distance from the Sun",
-            subtitle: "Measured in Millions of kms",
-            xaxis:{
-                ticks: [1, 3, 6, 9, 12],
-                tickFormatter: function(n) {
-
-                    var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel;
-
-                },
-                min: 1,
-                max: 12,
-                labelsAngle: 45,
-                title: 'Season'
-            },
-            yaxis:{
-                ticks: [1300, 1350, 1400, 1450, 1500],
-                min: 1300,
-                max: 1500,
-                title: 'Solar Radiation (W/m2)'
-            },
-            y2axis: {
-                color: dark_green,
-
-                ticks: [140, 145, 150, 155, 160],
-                min: 140,
-                max: 160,
-
-                title: 'Distance from Sun (Million km)'
-            },
-			grid:{
-				verticalLines: true,
-				backgroundColor: 'white'
-			},
-
-            HtmlText: false,
-            legend: {
-                position: 'nw'
-            },
-
-            mouse:{
-				track: true,
-				lineColor: 'purple',
-				relative: true,
-				position: 'nw',
-				sensibility: 1, // => The smaller this value, the more precise you've to point
-				trackDecimals: 1,
-                trackFormatter: function(obj) {
-
-                    var monthName = monthNamesShort[Number(obj.x - 1)];
-                    monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
-                }
-			},
-			crosshair:{
-				mode: 'xy'
-			}
-        });
-}
-
-function plotNothingGraph() {
-    var d1 = [[0,0]];
-    var d2 = [[0,0]];
-
-    var f = Flotr.draw(
-        $('theCanvas4'),[
-
-        {data:d1, label:'W/m2', lines: {show: false}, points: {show: true}},
-
-        {data:d2, label:'Million km', yaxis:2, lines: {show: false}, points: {show: true}},
-
-        ],{
-            title: "Earth's Solar Radiation and Distance from the Sun",
-            subtitle: "Solar Radiation Measured outside the atmosphere.",
-            xaxis:{
-                ticks: [1, 3, 6, 9, 12],
-                // tickFormatter: function(n){ return '('+n+')'; }, // => displays tick values between brackets.
-                tickFormatter: function(n) {
-
-                    var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel;
-
-                }, // => displays tick values between brackets.
-                min: 1,
-                max: 12,
-                labelsAngle: 45,
-                title: 'Season'
-            },
-            yaxis:{
-                ticks: [1300, 1350, 1400, 1450, 1500],
-                min: 1300,
-                max: 1500,
-                title: 'Solar Radiation (W/m2)'
-            },
-            y2axis: {
-                color: dark_green,
-
-                ticks: [140, 145, 150, 155, 160],
-                min: 140,
-                max: 160,
-
-                title: 'Distance from Sun (Million km)'
-            },
-			grid:{
-				verticalLines: true,
-				backgroundColor: 'white'
-			},
-
-            HtmlText: false,
-            legend: {
-                position: 'nw'
-            },
-
-            mouse:{
-				track: true,
-				lineColor: 'purple',
-				relative: true,
-				position: 'nw',
-				sensibility: 1, // => The smaller this value, the more precise you've to point
-				trackDecimals: 0,
-                trackFormatter: function(obj) {
-
-                    var monthName = monthNamesShort[Number(obj.x - 1)];
-                    monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
-                }
-			},
-			crosshair:{
-				mode: 'xy'
-			}
-        });
-}
-
-// Graph selection
-
-function showGraphChange() {
-    if (solar_radiation_graph.checked && sun_earth_distance_graph.checked) {
-        plotSolarRadiationAndEarthDistanceGraph();
-    } else if (solar_radiation_graph.checked) {
-        plotSolarRadiationGraph();
-    } else if (sun_earth_distance_graph.checked) {
-        plotEarthDistanceGraph();
-    } else {
-        plotNothingGraph();
-    }
-}
-
-// show_graph.onchange = showGraphChange;
-// show_graph.onchange();
-
 var scaleCanvas = function(_unusedArg_canvas, width, height) {
     if (width && height) {
         // possibly 'canvas' here was supposed to be 'oCanvas'?
@@ -2224,21 +1891,5 @@ var scaleCanvas = function(_unusedArg_canvas, width, height) {
     }
     return oCanvas;
 };
-function takeSnapshot() {
-    var png = canvas3.toDataURL();
-    var aspect = canvas3.clientWidth / canvas3.clientHeight;
-    var s1_full = document.getElementById("s1-full");
-    s1_full.src = png;
-    s1_full.onload = function () {
-        var canvas = document.createElement("canvas");
-        canvas.height = 64;
-        canvas.width = 64 * aspect;
-        var context = canvas.getContext('2d');
-        context.drawImage(s1_full, 0, 0, 64 * aspect, 64);
-        var png_small = canvas.toDataURL();
-        var s1_small = document.getElementById("s1-small");
-        s1_small.src = png_small;
-    };
-}
 
 choose_month.onchange();
