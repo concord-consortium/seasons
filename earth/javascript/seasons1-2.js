@@ -1,6 +1,12 @@
+// Exports
+var experimentDataToJSON;
+var experimentDataFromJSON;
+var scaleCanvas;
 
+(function() {
 
 var dark_side = 0.3;
+var i;
 
 /*----------------------------------------------------------------------
  * Canvases 1 and 3
@@ -1236,8 +1242,7 @@ SceneJS.setDebugConfigs({
  * Scene rendering loop and mouse handler stuff follows
  *---------------------------------------------------------------------*/
 
-var seasons_activity, scene1, scene1;
-
+var seasons_activity, scene1;
 seasons_activity = new seasons.Activity({
     version: 1.2,
     scenes: {
@@ -1418,8 +1423,6 @@ var month_data = {
 
 var month_names = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
-var seasons = ["Fall", "Winter", "Spring", "Summer"];
-
 var choose_month = document.getElementById("choose-month");
 
 var selected_city_latitude = document.getElementById("selected-city-latitude");
@@ -1438,7 +1441,7 @@ for (var c = 0; c < cities.length; c++) {
     }
 }
 
-for (var i = 0; i < active_cities.length; i++) {
+for (i = 0; i < active_cities.length; i++) {
     city_option = document.createElement('option');
     city = active_cities[i];
     city_location = city.location;
@@ -1496,22 +1499,24 @@ var table_row, table_data;
 var graph_checkbox_callbacks = {};
 
 var city_data_to_plot = [];
-for (var i = 0; i < active_cities.length; i++) {
-    city_data_to_plot.push({});
-    var city_data = city_data_to_plot[i];
-    var city = active_cities[i];
-    city_data.label = city.name;
-    city_data.color = city.color;
-    city_data.lines = { show: true };
-    city_data.points = { show: true };
-    city_data.data = [];
-    for (var m = 0; m < 12; m++) {
-        city_data.data.push([m, null]);
+(function() {
+    for (i = 0; i < active_cities.length; i++) {
+        city_data_to_plot.push({});
+        var city_data = city_data_to_plot[i];
+        var city = active_cities[i];
+        city_data.label = city.name;
+        city_data.color = city.color;
+        city_data.lines = { show: true };
+        city_data.points = { show: true };
+        city_data.data = [];
+        for (var m = 0; m < 12; m++) {
+            city_data.data.push([m, null]);
+        }
     }
-}
+}());
 
 var city_x_axis_tics = [];
-for (var i = 0; i < 12; i++) {
+for (i = 0; i < 12; i++) {
   var shifted_index = i;
   // var shifted_index = (i + 1) % 12;
   city_x_axis_tics.push([i , month_data[month_names[shifted_index]].short_name]);
@@ -1673,7 +1678,8 @@ if (LITE_VERSION) {
   city_latitude_temperature.onsubmit = addExperimentData;
 }
 
-function experimentDataToJSON() {
+// Exported for use by seasons.js
+experimentDataToJSON = function() {
     var exp_table = { rows: [] };
     if (city_data_table_body) {
       var rows = city_data_table_body.childElements();
@@ -1698,9 +1704,10 @@ function experimentDataToJSON() {
       exp_table.table_row_index = table_row_index;
     }
     return exp_table;
-}
+};
 
-function experimentDataFromJSON(exp_table) {
+// Exported for use by seasons.js
+experimentDataFromJSON = function(exp_table) {
     var i;
     if (!city_data_table_body) { return; }
     var table_rows = city_data_table_body.rows.length;
@@ -1770,7 +1777,7 @@ function experimentDataFromJSON(exp_table) {
     }
     plotCityData();
     table_row_index = exp_table.table_row_index;
-}
+};
 
 //
 // Graphs ...
@@ -1875,7 +1882,8 @@ function generateCityColorKeys() {
 
 if (!LITE_VERSION) { generateCityColorKeys(); }
 
-var scaleCanvas = function(_unusedArg_canvas, width, height) {
+// exported for use by Flotr
+scaleCanvas = function(_unusedArg_canvas, width, height) {
     if (width && height) {
         // possibly 'canvas' here was supposed to be 'oCanvas'?
         var canvas = document.createElement("canvas");
@@ -1893,3 +1901,5 @@ var scaleCanvas = function(_unusedArg_canvas, width, height) {
 };
 
 choose_month.onchange();
+
+}());
