@@ -43,6 +43,34 @@
 // cities.js
 /* global cities: false */
 
+/* DOM IDs referenced:
+
+    earth-rotation
+    choose-month
+    selected-city-latitude
+    city-latitude-temperature
+    city-latitude-temperature-label
+    city-latitude-temperature-prediction
+    city-latitude-button-results
+    earth-rotation
+    button-results
+    city-data-table-body
+    button-results
+    city-color-keys
+    color-key-list
+    theCanvas4
+
+    via scene1 options:
+    theCanvas1
+    choose-month
+    choose-view
+    earth-info-label1
+
+    via scene3 options:
+    theCanvas3
+    earth-info-label3
+*/
+
 // Exports
 var experimentDataToJSON;
 var experimentDataFromJSON;

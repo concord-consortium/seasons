@@ -65,6 +65,21 @@
     earth_ephemerides_solar_constant_by_month: false
 */
 
+/* DOM IDs referenced:
+
+    button-results
+    content
+
+    (the below are configurable per-scence):
+    options.canvas || "theCanvas"
+    options.choose_month || "choose-month"
+    options.choose_tilt || "choose-tilt"
+    options.choose_view || "choose-view"
+    options.circle_orbit || "circle-orbit"
+    options.earth_info_label || "earth-info-label"
+    options.orbital_grid || "orbital-grid"
+*/
+
 var seasons;
 
 (function() {
