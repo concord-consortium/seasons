@@ -788,7 +788,7 @@ seasons.Scene.prototype.setAspectRatio = function() {
 seasons.Scene.prototype.setCamera = function(settings) {
     var prop;
     for(prop in settings) this.optics[prop] = settings[prop];
-    this.camera.set("optics", optics);
+    this.camera.set("optics", this.optics);
 };
 
 
