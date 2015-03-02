@@ -1240,7 +1240,7 @@ var seasons_activity, scene1, scene1;
 
 seasons_activity = new seasons.Activity({
     version: 1.2,
-    scenes: { 
+    scenes: {
       scene1: new seasons.Scene({
           theScene:                    "theScene1",
           camera:                      "theCamera1",
@@ -1311,7 +1311,7 @@ SceneJS.setDebugConfigs({
 function seasonsRender() {
     scene1.render();
     scene3.render();
-};
+}
 
 var earth_rotation = document.getElementById("earth-rotation");
 
@@ -1326,7 +1326,7 @@ function seasonsAnimate(t) {
         }
         seasonsRender();
     }
-};
+}
 
 SceneJS.bind("error", function() {
     keepAnimating = false;
@@ -1349,7 +1349,8 @@ window.requestAnimFrame = (function() {
 
 var updateRate = 30;
 var updateInterval = 1000/updateRate;
-var nextAnimationTime = new Date().getTime(); + updateInterval;
+// looks like this may have been *intended* to be `new Data().getTime() + updateInterval`
+var nextAnimationTime = new Date().getTime(); //+ updateInterval;
 var keepAnimating = true;
 
 requestAnimFrame(seasonsAnimate);
@@ -1376,9 +1377,10 @@ function sceneCompletelyLoaded() {
 SceneJS.withNode("theScene3").bind("loading-status",
 
     function(event) {
-
-        if (zBufferDepth == 0) {
-            zBufferDepth = SceneJS.withNode("theScene3").get("ZBufferDepth");
+        if (zBufferDepth === 0) {
+            // not sure if this parseInt is necessary -- comparison above was previously '=='
+            // which might have depended on implicit conversion -RK
+            zBufferDepth = parseInt(SceneJS.withNode("theScene3").get("ZBufferDepth"), 10);
             var mesg = "using webgl context with Z-buffer depth of: " + zBufferDepth + " bits";
             SceneJS._loggingModule.info(mesg);
 
@@ -1414,7 +1416,7 @@ var month_data = {
     "dec": { index: 11, num:  12, short_name: 'DEC', long_name: 'December' }
 };
 
-var month_names = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+var month_names = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
 var seasons = ["Fall", "Winter", "Spring", "Summer"];
 
@@ -1432,9 +1434,9 @@ for (var c = 0; c < cities.length; c++) {
     if (cities[c].active) {
         this_city.key = this_city.name.replace(/\W/, '') + '_' + c1 + '_' + this_city.location.latitude + '_' + this_city.location.longitude;
         active_cities.push(cities[c]);
-        c1++
-    };
-};
+        c1++;
+    }
+}
 
 for (var i = 0; i < active_cities.length; i++) {
     city_option = document.createElement('option');
@@ -1469,7 +1471,7 @@ function updateLatitudeLineAndCity() {
   if (earth_rotation) {
     earth_rotation.checked = false;
   }
-};
+}
 
 function updateLatitudeLineAndCityHandler() {
   var city = active_cities[Number(selected_city_latitude.value)];
@@ -1479,12 +1481,12 @@ function updateLatitudeLineAndCityHandler() {
 selected_city_latitude.onchange = updateLatitudeLineAndCityHandler;
 
 function earthRotationLogger() {
-  seasons_activity.logInteraction({ "rotation": earth_rotation.checked })
+  seasons_activity.logInteraction({ "rotation": earth_rotation.checked });
 }
 earth_rotation.onchange = earthRotationLogger;
 
 function chooseMonthLogger(month) {
-  seasons_activity.logInteraction({ "choose month": month })
+  seasons_activity.logInteraction({ "choose month": month });
 }
 
 var city_data_table = document.getElementById("city-data-table");
@@ -1506,21 +1508,21 @@ for (var i = 0; i < active_cities.length; i++) {
     city_data.data = [];
     for (var m = 0; m < 12; m++) {
         city_data.data.push([m, null]);
-    };
-};
+    }
+}
 
 var city_x_axis_tics = [];
 for (var i = 0; i < 12; i++) {
   var shifted_index = i;
   // var shifted_index = (i + 1) % 12;
   city_x_axis_tics.push([i , month_data[month_names[shifted_index]].short_name]);
-};
+}
 
 var table_row_index = 0;
 
 function addExperimentData() {
     if (selected_city_latitude.value == 'city ...' ||
-        city_latitude_temperature_prediction.value == '') {
+        ! city_latitude_temperature_prediction.value) {
         return false;
     }
     var city_index = Number(selected_city_latitude.value);
@@ -1621,7 +1623,7 @@ function addExperimentData() {
     city_data_table_body.appendChild(table_row);
 
     // erase previous temperature prediction
-    city_latitude_temperature_prediction.value=""
+    city_latitude_temperature_prediction.value="";
 
     SortableTable.load();
     return false;
@@ -1634,7 +1636,7 @@ function addExperimentData() {
 // 4: "147.43"
 // 5: "jun"
 function _graph_checkbox_callback(element) {
-    var graph_id_parts = element.id.split(/_/)
+    var graph_id_parts = element.id.split(/_/);
     var city_index = graph_id_parts[2];
     var city_data = city_data_to_plot[city_index];
     var city = active_cities[city_index];
@@ -1644,16 +1646,16 @@ function _graph_checkbox_callback(element) {
     if (use_fahrenheit) temperature = temperature * 9 / 5 + 32;
     var shifted_index = month.index;
     if (element.checked) {
-        city_data.data[shifted_index] = [shifted_index, temperature]
+        city_data.data[shifted_index] = [shifted_index, temperature];
     } else {
-        city_data.data[shifted_index] = [shifted_index, null]
-    };
+        city_data.data[shifted_index] = [shifted_index, null];
+    }
     plotCityData();
-};
+}
 
 function justUpdateResults() {
   if (selected_city_latitude.value == 'city ...' ||
-    (city_latitude_temperature_prediction && city_latitude_temperature_prediction.value == '')) {
+    (city_latitude_temperature_prediction && ! city_latitude_temperature_prediction.value)) {
     return false;
   }
   var city_index = Number(selected_city_latitude.value);
@@ -1662,7 +1664,7 @@ function justUpdateResults() {
 
   var the_month = scene1.month;
   var month = month_data[the_month];
-  var results = document.getElementById("button-results")
+  var results = document.getElementById("button-results");
   var ave_temp = city.average_temperatures[month.index];
   if (use_fahrenheit) ave_temp = ave_temp * 9 / 5 + 32;
   results.textContent = sprintf("%3.1f", ave_temp);
@@ -1703,21 +1705,22 @@ function experimentDataToJSON() {
 }
 
 function experimentDataFromJSON(exp_table) {
-    if (!city_data_table_body) { return };
+    var i;
+    if (!city_data_table_body) { return; }
     var table_rows = city_data_table_body.rows.length;
-    for (var i = 0; i < table_rows; i++) {
+    for (i = 0; i < table_rows; i++) {
         city_data_table_body.deleteRow(0);
-    };
+    }
 
-    for (var i = 0; i < city_data_to_plot.length; i++) {
+    for (i = 0; i < city_data_to_plot.length; i++) {
         var city_data = city_data_to_plot[i];
         for (var j = 0; j < city_data.data.length; j++) {
             city_data.data[j] = [j, null];
         }
-    };
+    }
 
     var table_row, table_data;
-    for (var i = 0; i < exp_table.rows.length; i++) {
+    for (i = 0; i < exp_table.rows.length; i++) {
         var row = exp_table.rows[i];
 
         table_row = document.createElement('tr');
@@ -1757,16 +1760,18 @@ function experimentDataFromJSON(exp_table) {
         table_data.appendChild(graph_checkbox);
         table_row.appendChild(table_data);
 
+        // Could almost surely be moved out of the loop. Meanwhile...
+        //jshint -W083
         var graph_checkbox_callback = function(event) {
             _graph_checkbox_callback(this);
         };
-
+        //jshint +W083
         graph_checkbox_callbacks[graph_checkbox.id] = graph_checkbox_callback;
         graph_checkbox.onchange = graph_checkbox_callback;
         _graph_checkbox_callback(graph_checkbox);
 
         city_data_table_body.appendChild(table_row);
-    };
+    }
     plotCityData();
     table_row_index = exp_table.table_row_index;
 }
@@ -1780,11 +1785,11 @@ var use_fahrenheit = true;
 if (use_fahrenheit) {
     city_latitude_temperature_label.textContent =
 
-    city_latitude_temperature_label.textContent.replace(/(C|F)$/, 'F')
+    city_latitude_temperature_label.textContent.replace(/(C|F)$/, 'F');
 } else {
     city_latitude_temperature_label.textContent =
 
-    city_latitude_temperature_label.textContent.replace(/(C|F)$/, 'C')
+    city_latitude_temperature_label.textContent.replace(/(C|F)$/, 'C');
 
 }
 
@@ -1792,7 +1797,7 @@ var y_axis = { title: 'Temperature deg F', min: -20, max: 90 };
 var graph_degree_string = "deg F";
 
 if (!use_fahrenheit) {
-    graph_degree_string = "deg F"
+    graph_degree_string = "deg F";
     y_axis.title = 'Temperature deg C';
     y_axis.min = -30;
     y_axis.max = 30;
@@ -1832,7 +1837,7 @@ function plotCityData() {
         crosshair:{ mode: 'xy' }
       }
     );
-};
+}
 
 if (!LITE_VERSION) { plotCityData(); }
 
@@ -1844,7 +1849,7 @@ function generateCityColorKeys() {
     city_color_keys.removeChild(color_key_list);
 
     // create a new color-key-list
-    var color_key_list = document.createElement('ul');
+    color_key_list = document.createElement('ul');
     // color_key_list.className = "vlist";
     color_key_list.id = "color-key-list";
 
@@ -1870,7 +1875,7 @@ function generateCityColorKeys() {
     }
     // insert the new color key list into the document
     city_color_keys.appendChild(color_key_list);
-};
+}
 
 if (!LITE_VERSION) { generateCityColorKeys(); }
 
@@ -1903,7 +1908,7 @@ function plotSolarRadiationAndEarthDistanceGraph() {
                 tickFormatter: function(n) {
 
                     var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel
+                    return ticlabel;
 
                 }, // => displays tick values between brackets.
                 min: 1,
@@ -1946,14 +1951,14 @@ function plotSolarRadiationAndEarthDistanceGraph() {
                 trackFormatter: function(obj) {
                     var monthName = monthNamesShort[Number(obj.x - 1)];
                     monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;;
+                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
                 }
 			},
 			crosshair:{
 				mode: 'xy'
 			}
         });
-};
+}
 
 function plotSolarRadiationGraph() {
     var d1 = [];
@@ -1981,7 +1986,7 @@ function plotSolarRadiationGraph() {
                 tickFormatter: function(n) {
 
                     var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel
+                    return ticlabel;
 
                 },
                 min: 1,
@@ -2025,14 +2030,14 @@ function plotSolarRadiationGraph() {
 
                     var monthName = monthNamesShort[Number(obj.x - 1)];
                     monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;;
+                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
                 }
 			},
 			crosshair:{
 				mode: 'xy'
 			}
         });
-};
+}
 
 function plotEarthDistanceGraph() {
     var d1 = [[0,0]];
@@ -2060,7 +2065,7 @@ function plotEarthDistanceGraph() {
                 tickFormatter: function(n) {
 
                     var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel
+                    return ticlabel;
 
                 },
                 min: 1,
@@ -2104,14 +2109,14 @@ function plotEarthDistanceGraph() {
 
                     var monthName = monthNamesShort[Number(obj.x - 1)];
                     monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;;
+                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
                 }
 			},
 			crosshair:{
 				mode: 'xy'
 			}
         });
-};
+}
 
 function plotNothingGraph() {
     var d1 = [[0,0]];
@@ -2133,7 +2138,7 @@ function plotNothingGraph() {
                 tickFormatter: function(n) {
 
                     var ticlabel = monthNamesShort[Number(n - 1)];
-                    return ticlabel
+                    return ticlabel;
 
                 }, // => displays tick values between brackets.
                 min: 1,
@@ -2177,14 +2182,14 @@ function plotNothingGraph() {
 
                     var monthName = monthNamesShort[Number(obj.x - 1)];
                     monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;;
+                    return  monthName + ', ' + obj.y + ' ' +obj.series.label;
                 }
 			},
 			crosshair:{
 				mode: 'xy'
 			}
         });
-};
+}
 
 // Graph selection
 
@@ -2203,8 +2208,9 @@ function showGraphChange() {
 // show_graph.onchange = showGraphChange;
 // show_graph.onchange();
 
-var scaleCanvas = function(canvas, width, height) {
+var scaleCanvas = function(_unusedArg_canvas, width, height) {
     if (width && height) {
+        // possibly 'canvas' here was supposed to be 'oCanvas'?
         var canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
@@ -2217,7 +2223,7 @@ var scaleCanvas = function(canvas, width, height) {
         return oSaveCanvas;
     }
     return oCanvas;
-}
+};
 function takeSnapshot() {
     var png = canvas3.toDataURL();
     var aspect = canvas3.clientWidth / canvas3.clientHeight;
@@ -2232,7 +2238,7 @@ function takeSnapshot() {
         var png_small = canvas.toDataURL();
         var s1_small = document.getElementById("s1-small");
         s1_small.src = png_small;
-    }
+    };
 }
 
 choose_month.onchange();
