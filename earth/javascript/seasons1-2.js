@@ -4,6 +4,7 @@ var experimentDataFromJSON;
 var scaleCanvas;
 
 (function() {
+"use strict";
 
 var dark_side = 0.3;
 var i;
@@ -1242,8 +1243,7 @@ SceneJS.setDebugConfigs({
  * Scene rendering loop and mouse handler stuff follows
  *---------------------------------------------------------------------*/
 
-var seasons_activity, scene1;
-seasons_activity = new seasons.Activity({
+var seasons_activity = new seasons.Activity({
     version: 1.2,
     scenes: {
       scene1: new seasons.Scene({
@@ -1299,8 +1299,8 @@ seasons_activity = new seasons.Activity({
     }
 });
 
-scene1 = seasons_activity.scenes.scene1;
-scene3 = seasons_activity.scenes.scene3;
+var scene1 = seasons_activity.scenes.scene1;
+var scene3 = seasons_activity.scenes.scene3;
 
 scene3.linked_scene = scene1;
 scene1.linked_from_scene = scene3;
@@ -1321,7 +1321,7 @@ function seasonsRender() {
 var earth_rotation = document.getElementById("earth-rotation");
 
 function seasonsAnimate() {
-    sampleTime = new Date().getTime();
+    var sampleTime = new Date().getTime();
     if (keepAnimating) requestAnimFrame(seasonsAnimate);
     if (sampleTime > nextAnimationTime) {
         nextAnimationTime = nextAnimationTime + updateInterval;
