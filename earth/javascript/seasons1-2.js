@@ -1,3 +1,50 @@
+/* jshint undef: true */
+
+// exports
+/* global
+    experimentDataToJSON: true,
+    experimentDataFromJSON: true,
+    scaleCanvas: true,
+*/
+
+// libs
+/* global
+    $: false,
+    SceneJS: false,
+    sprintf: false,
+    Flotr: false,
+    SortableTable: false,
+*/
+
+// def by page?
+/* global LITE_VERSION: false */
+
+// solar-system-data.js
+/* global
+    initial_earth_eye: false,
+    earth_x_pos: false,
+    earth_view_small_offset: false,
+    milky_way_apparent_radius: false,
+    sun_x_pos: false,
+    sun_radius_km: false,
+    earth_orbital_radius_km: false,
+    sun_earth_line_size_large: false,
+    earth_radius_km: false,
+*/
+
+// orbit-grid.js
+/* global
+
+    orbit_grid_earth_positions: false,
+    orbit_grid_earth_indices: false,
+*/
+
+// seasons.js
+/* global seasons: false */
+
+// cities.js
+/* global cities: false */
+
 // Exports
 var experimentDataToJSON;
 var experimentDataFromJSON;
@@ -1341,7 +1388,7 @@ SceneJS.bind("reset", function() {
     keepAnimating = false;
 });
 
-window.requestAnimFrame = (function() {
+var requestAnimFrame = (function() {
   return window.requestAnimationFrame ||
          window.webkitRequestAnimationFrame ||
          window.mozRequestAnimationFrame ||
