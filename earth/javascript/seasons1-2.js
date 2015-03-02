@@ -3,8 +3,7 @@
 // exports
 /* global
     experimentDataToJSON: true,
-    experimentDataFromJSON: true,
-    scaleCanvas: true,
+    experimentDataFromJSON: true
 */
 
 // libs
@@ -13,7 +12,7 @@
     SceneJS: false,
     sprintf: false,
     Flotr: false,
-    SortableTable: false,
+    SortableTable: false
 */
 
 // def by page?
@@ -29,14 +28,13 @@
     sun_radius_km: false,
     earth_orbital_radius_km: false,
     sun_earth_line_size_large: false,
-    earth_radius_km: false,
+    earth_radius_km: false
 */
 
 // orbit-grid.js
 /* global
-
     orbit_grid_earth_positions: false,
-    orbit_grid_earth_indices: false,
+    orbit_grid_earth_indices: false
 */
 
 // seasons.js
@@ -48,7 +46,6 @@
 // Exports
 var experimentDataToJSON;
 var experimentDataFromJSON;
-var scaleCanvas;
 
 (function() {
 "use strict";
@@ -1928,24 +1925,6 @@ function generateCityColorKeys() {
 }
 
 if (!LITE_VERSION) { generateCityColorKeys(); }
-
-// exported for use by Flotr
-scaleCanvas = function(_unusedArg_canvas, width, height) {
-    if (width && height) {
-        // possibly 'canvas' here was supposed to be 'oCanvas'?
-        var canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        canvas.style.width = width+"px";
-        canvas.style.height = height+"px";
-
-        var oSaveCtx = canvas.getContext("2d");
-
-        oSaveCtx.drawImage(oCanvas, 0, 0, oCanvas.width, oCanvas.height, 0, 0, iWidth, iHeight);
-        return oSaveCanvas;
-    }
-    return oCanvas;
-};
 
 choose_month.onchange();
 
