@@ -1,7 +1,76 @@
-// jshint unused: true
-(function() {
+// jshint unused: true, undef: true
 
-var seasons = {};
+// exports
+/* global
+    seasons: true
+*/
+
+// libs
+/* global
+    SceneJS: false,
+    sprintf: false,
+    mat4: false,
+    vec3: false
+*/
+
+// def by page?
+/* global
+    LITE_VERSION: false,
+    CONSTRAIN_NAVIGATION: false
+*/
+
+// def by seasons<m>-<n>.js
+/* global
+    experimentDataFromJSON: false,
+    experimentDataToJSON: false
+*/
+
+// latitude-line.js
+/* global
+    LatitudeLine: false
+*/
+
+// earth-surface-location-indicator.js
+/* global
+     EarthSurfaceLocationIndicator: false
+*/
+
+// solar-system-data.js
+/* global
+    normalized_initial_earth_eye: false,
+    normalized_initial_earth_eye_side: false,
+    deg2rad: false,
+    rad2deg: false,
+    earth_radius_km: false,
+    earth_x_pos: false,
+    initial_sun_eye_top: false,
+    initial_sun_eye_side: false,
+    initial_earth_eye_top: false,
+    initial_earth_eye_side: false,
+    scale_factor: false,
+    sun_x_pos: false,
+    normalized_initial_earth_eye_top: false,
+    sun_earth_line_size_large: false,
+    sun_earth_line_size_med: false
+*/
+
+// earth-orbit.js
+/* global
+    earth_ellipse_distance_from_sun_by_month: false,
+    earth_ellipse_location_by_month: false
+*/
+
+// jpl-earth-ephemerides.js
+/* global
+    earth_ephemerides_solar_constant_by_month: false
+*/
+
+var seasons;
+
+(function() {
+"use strict";
+
+seasons = {};
 var root = this;
 seasons.VERSION = '0.1.0';
 
@@ -676,6 +745,8 @@ seasons.Scene.prototype.elementGetY = function(el) {
 };
 
 seasons.Scene.prototype.earthLabel = function() {
+    var lpos;
+
     if (this.earth_label) {
 
         var edist = earth_ellipse_distance_from_sun_by_month(this.month);
@@ -886,21 +957,20 @@ seasons.Scene.prototype._orbitalGridChange = function(orbital_grid) {
 };
 
 seasons.Activity = function(options) {
-    self = this;
-    self.startTime = Date.now();
-    self.version = options.version;
-    self.scenes = options.scenes;
+    this.startTime = Date.now();
+    this.version = options.version;
+    this.scenes = options.scenes;
     var scenes = [];
-    if (self.scenes.scene1) {
-      self.scenes.scene1.logger = self.logInteraction;
-      scenes.scene1 = self.scenes.scene1.toJSON();
+    if (this.scenes.scene1) {
+      this.scenes.scene1.logger = this.logInteraction;
+      scenes.scene1 = this.scenes.scene1.toJSON();
     }
-    if (self.scenes.scene3) {
-      self.scenes.scene3.logger = self.logInteraction;
-      scenes.scene3 = self.scenes.scene3.toJSON();
+    if (this.scenes.scene3) {
+      this.scenes.scene3.logger = this.logInteraction;
+      scenes.scene3 = this.scenes.scene3.toJSON();
     }
-    self.log = [];
-    self.logInteraction({
+    this.log = [];
+    this.logInteraction({
       "start": Date(),
       // "choose month": this.choose_month.value,
       // "choose city": city.name,
@@ -910,10 +980,10 @@ seasons.Activity = function(options) {
 };
 
 seasons.Activity.prototype.logInteraction = function(interaction) {
-    var time = (Date.now() - self.startTime) / 1000,
+    var time = (Date.now() - this.startTime) / 1000,
         item;
     item = [time, interaction];
-    self.log.push(item);
+    this.log.push(item);
 };
 
 seasons.Activity.prototype.toJSON = function() {
@@ -963,5 +1033,5 @@ seasons.Activity.prototype.fromJSON = function(json_object) {
 };
 
 // export namespace
-if (root !== 'undefined') root.seasons = seasons;
+if (typeof root !== 'undefined') root.seasons = seasons;
 })();
