@@ -77,20 +77,113 @@
 
 </head>
 <div id="container">
+
   <div id="header-inner">
     <h1 id="title">GRASP</h1>
   </div>
+
   <div id="content">
     <div id="webglCanvasContainer">
+
       <div class="glCanvasHalfFrame">
         <canvas id="theCanvas"></canvas>
       </div>
+
+      <ul class="hlist column">
+
+        <li>
+          <div class="glCanvasQuarterFrame">
+            <h3 class="label">View: Earth from Spaceship</h3>
+            <canvas id="theCanvas3">
+            </canvas>
+          </div>
+        </li>
+
+        <li>
+          <div class="glCanvasQuarterFrame">
+            <h3 class="label">View: Sun-Earth System</h3>
+            <canvas id="theCanvas1">
+            </canvas>
+            <div class="underCanvasUI">
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <ul class="hlist">
+        <li>
+          <div class="editorQuarterFrame">
+            <div class="underCanvasUI">
+              <ul class="hlist">
+                <li style="display:none;">
+                  <form id="choose-view">
+                    <fieldset>
+                      <legend>Select view: </legend>
+                      <label><input type="radio" name="view" value="top"> Top</input></label>
+                      <label><input type="radio" name="view" value="side" checked> Side</input></label>
+                    </fieldset>
+                  </form>
+                </li>
+                <li>
+                  <form id="show-me">
+                    <fieldset>
+                      <legend>Show me: </legend>
+                      <label style="display:none;"><input id="orbital-grid" type="checkbox" checked/> Grid: </label>
+                      <label><input id="earth-rotation" type="checkbox"/> Rotation</label>
+                    </fieldset>
+                  </form>
+                </li>
+              </ul>
+              <div id="results">
+                <p>
+                  <form>
+                    <label for="choose-month">Choose month:</label>
+                    <select id="choose-month" name="chosen-month">
+                      <option value="jan">January</option>
+                      <option value="feb">February</option>
+                      <option value="mar">March</option>
+                      <option value="apr">April</option>
+                      <option value="may">May</option>
+                      <option value="jun" selected>June</option>
+                      <option value="jul">July</option>
+                      <option value="aug">August</option>
+                      <option value="sep">September</option>
+                      <option value="oct">October</option>
+                      <option value="nov">November</option>
+                      <option value="dec">December</option>
+                    </select>
+                  </form>
+                </p>
+                <p>
+                  <form id="select-city-latitude">
+                    <label for="selected-city-latitude">Choose city:</label>
+                    <select id="selected-city-latitude" name="selected-city-latitude">
+                      <option disabled selected>city ...</option>
+                    </select>
+                  </form>
+                </p>
+                <p>
+                  <form id="city-latitude-button-results">
+                    <input type="submit" value="Show Average Temperature" />
+                    <span id="button-results"></span>
+                    <label id="city-latitude-temperature-label" for="city-latitude-temperature-prediction">&deg;F</label>
+                  </form>
+                </p>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+
       <div id="info-graph" class="webgl-canvas-graph transparent-ui">
         <label><input id="graph-view" type="checkbox" /></label>
         <canvas id="altitude-graph-canvas" width="1" height="1"></canvas>
         <canvas id="radiation-lon-graph-canvas" width="1" height="1"></canvas>
         <canvas id="radiation-lat-graph-canvas" width="1" height="1"></canvas>
       </div>
+
       <div id="controls-label" class="webgl-canvas-label transparent-ui">
         <form id="show-me">
           <fieldset>
@@ -176,96 +269,18 @@
           </fieldset>
         </form>
       </div>
+
       <div id="debug-label" class="webgl-canvas-label transparent-ui" style="font-size:90%; display:none;">
         <div id="debug-content"></div>
         <div id="debug-checkbox"><label >debugging output <input id="debug-view" type="checkbox"/></label></div>
       </div>
-      <ul class="hlist column">
-        <li>
-          <div class="glCanvasQuarterFrame">
-            <h3 class="label">View: Earth from Spaceship</h3>
-            <canvas id="theCanvas3">
-            </canvas>
-          </div>
-        </li>
-        <li>
-          <div class="glCanvasQuarterFrame">
-            <h3 class="label">View: Sun-Earth System</h3>
-            <canvas id="theCanvas1">
-            </canvas>
-            <div class="underCanvasUI">
-            </div>
-          </div>
-        </li>
-      </ul>
-      <ul class="hlist">
-        <li>
-          <div class="editorQuarterFrame">
-            <div class="underCanvasUI">
-              <ul class="hlist">
-                <li style="display:none;">
-                  <form id="choose-view">
-                    <fieldset>
-                      <legend>Select view: </legend>
-                      <label><input type="radio" name="view" value="top"> Top</input></label>
-                      <label><input type="radio" name="view" value="side" checked> Side</input></label>
-                    </fieldset>
-                  </form>
-                </li>
-                <li>
-                  <form id="show-me">
-                    <fieldset>
-                      <legend>Show me: </legend>
-                      <label style="display:none;"><input id="orbital-grid" type="checkbox" checked/> Grid: </label>
-                      <label><input id="earth-rotation" type="checkbox"/> Rotation</label>
-                    </fieldset>
-                  </form>
-                </li>
-              </ul>
-              <div id="results">
-                <p>
-                  <form>
-                    <label for="choose-month">Choose month:</label>
-                    <select id="choose-month" name="chosen-month">
-                      <option value="jan">January</option>
-                      <option value="feb">February</option>
-                      <option value="mar">March</option>
-                      <option value="apr">April</option>
-                      <option value="may">May</option>
-                      <option value="jun" selected>June</option>
-                      <option value="jul">July</option>
-                      <option value="aug">August</option>
-                      <option value="sep">September</option>
-                      <option value="oct">October</option>
-                      <option value="nov">November</option>
-                      <option value="dec">December</option>
-                    </select>
-                  </form>
-                </p>
-                <p>
-                  <form id="select-city-latitude">
-                    <label for="selected-city-latitude">Choose city:</label>
-                    <select id="selected-city-latitude" name="selected-city-latitude">
-                      <option disabled selected>city ...</option>
-                    </select>
-                  </form>
-                </p>
-                <p>
-                  <form id="city-latitude-button-results">
-                    <input type="submit" value="Show Average Temperature" />
-                    <span id="button-results"></span>
-                    <label id="city-latitude-temperature-label" for="city-latitude-temperature-prediction">&deg;F</label>
-                  </form>
-                </p>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
+
     </div>
+
     <div id="latitude-slider-div" class="webgl-canvas-label transparent-ui vertical" style="font-size:90%; display:none;">
         <input id="latitude-slider" name="latitude-slider" type="range" min="-90" max="90" value="0">
     </div>
+
     <div id="info" style="display:none;">
       <p>
         <b>Drag</b> with the mouse or use the <b>arrow</b> keys to rotate left-right or up-down.<br />
@@ -274,10 +289,12 @@
         Use the <b>alt or option</b> key along with the <b>arrows</b> keys to adjust the selected surface location.
       </p>
     </div>
+
     <div id="log" style="display:none;">
       <h3>SceneJS Log</h3>
       <div id="theLoggingDiv"></div>
     </div>
+
   </div>
 </div>
 <div id="earth-info-label1" class="earth-info-label transparent-ui"></div>
