@@ -3757,7 +3757,7 @@ function infoLabel() {
     }
 }
 
-info_view.onchange = infoLabel;
+if (info_view) { info_view.onchange = infoLabel; }
 
 //
 // ControlsLabel
