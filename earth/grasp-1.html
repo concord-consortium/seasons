@@ -284,13 +284,14 @@
 <div id="earth-info-label3" class="earth-info-label transparent-ui"></div>
 <script type="text/javascript">
 
-  function myRequire(src, callback){
+  function myRequire(src, callback) {
+    var libraries;
     if (src.constructor == Array) {
-      var libraries = src;
+      libraries = src;
     } else {
-      var libraries = [src];
+      libraries = [src];
     }
-    var script = document.createElement("script")
+    var script = document.createElement("script");
     script.type = "text/javascript";
     // IE
     script.onreadystatechange = function () {
@@ -298,26 +299,26 @@
         script.onreadystatechange = null;
         libraries.shift();
         if (libraries.length > 0) {
-          myRequire(libraries)
+          myRequire(libraries);
         }
         if (callback) {
           callback();
         }
       }
-    }
+    };
     // Not IE
     script.onload = function () {
       libraries.shift();
       if (libraries.length > 0) {
-        myRequire(libraries)
+        myRequire(libraries);
       }
       if (callback) {
         callback();
       }
-    }
+    };
     script.src = libraries[0];
     document.getElementsByTagName("head")[0].appendChild(script);
-  };
+  }
 
   window.onload=function() {
     LITE_VERSION = true;
