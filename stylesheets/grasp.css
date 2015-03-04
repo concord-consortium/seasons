@@ -110,8 +110,8 @@ h4 {
 
 #container {
     position: relative;
-    width: sf x !important;
-    min-width: 1000px !important; /*padding: 10px 10px 10px 50px;*/
+    width: 1200px !important;
+    min-width: 1200px !important; /*padding: 10px 10px 10px 50px; */
     margin: 0 auto;
     border: 0;
     clear: both;
@@ -436,9 +436,10 @@ h4 {
 }
 
 .glCanvasQuarterFrame {
-    width: 480px;
+    width: 360px;
     margin-left: 5px;
     padding: 2px;
+    display: inline-block;
 }
 
 .glGraphQuarterFrame {
@@ -450,8 +451,24 @@ h4 {
 }
 
 #content .glCanvasQuarterFrame canvas {
-    width: 480px;
-    height: 350px;
+    width: 360px;
+    height: 283px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: black;
+}
+
+.glCanvasHalfFrame {
+    width: 600px;
+    margin-left: 5px;
+    padding: 2px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.glCanvasHalfFrame canvas {
+    width: 600px;
+    height: 433px;
     margin-top: 5px;
     margin-bottom: 5px;
     background-color: black;
@@ -475,24 +492,9 @@ h4 {
     font-size: 110%;
 }
 
-#content .glCanvasQuarterFrame ul.hlist  {
-    line-height: 1.0em;
-    color: #444444 !important;
-    margin-top: 0px;
-    margin-bottom: 2px;
-    padding-top: 0px;
-    padding-bottom: 2px;
+#content ul.column {
+    width: 500px;
     display: inline-block;
-    list-style-type: none;
-}
-
-#content .glCanvasQuarterFrame ul.hlist li  {
-    line-height: 1.0em;
-    color: #444444 !important;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
 }
 
 /*fieldset {
@@ -631,7 +633,6 @@ fieldset label  {
 #content ul.hlist li {
     line-height: 1.4em;
     color: #444444 !important;
-    display: inline-table;
     vertical-align: top;
     list-style-type: none;
 }
