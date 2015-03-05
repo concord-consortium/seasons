@@ -76,24 +76,28 @@
   <div id="content">
     <div id="webglCanvasContainer">
 
-      <div class="glCanvasHalfFrame">
-        <canvas id="theCanvas"></canvas>
-      </div>
-
-      <ul class="hlist column">
-
-        <li>
-          <div class="glCanvasQuarterFrame">
+          <div class="glCanvasHalfFrame column">
             <h3 class="label">View: Earth from Spaceship</h3>
             <canvas id="theCanvas3">
             </canvas>
           </div>
-        </li>
+
+      <ul class="hlist narrow column">
 
         <li>
           <div class="glCanvasQuarterFrame">
             <h3 class="label">View: Sun-Earth System</h3>
             <canvas id="theCanvas1">
+            </canvas>
+            <div class="underCanvasUI">
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="glCanvasQuarterFrame">
+            <h3 class="label">Rays View (TODO)</h3>
+            <canvas id="raysViewCanvas">
             </canvas>
             <div class="underCanvasUI">
             </div>
@@ -335,7 +339,6 @@
         "../lib/scenejs-0.8.0/scenejs.js",
         "javascript/jpl-earth-ephemerides.js",
         "javascript/cities.js",
-        "javascript/grasp/grasp-seasons-explorer.js",
         "javascript/solar-system-data.js",
         "javascript/earth-axis.js",
         "javascript/sun.js",
