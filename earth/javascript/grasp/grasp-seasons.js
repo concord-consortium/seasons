@@ -480,7 +480,7 @@ seasons.Scene.prototype.get_solar_flux = function() {
 
 seasons.Scene.prototype.get_normalized_earth_eye = function() {
     var normalized_eye = {};
-    var eye = this.lookat.get("eye");
+    var eye = this.look.get("eye");
     var ep = this.earth_position.get();
     normalized_eye.x = eye.x - ep.x;
     normalized_eye.y = eye.y - ep.y;
