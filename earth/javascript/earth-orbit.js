@@ -50,7 +50,7 @@ var earth_circle_location_by_month = function(month) {
 };
 
 var earthCircleOrbit = SceneJS.createNode({
-    type: "library",    
+    type: "library",
     nodes: [
         {
             id: "earthCircleOrbit",
@@ -58,57 +58,57 @@ var earthCircleOrbit = SceneJS.createNode({
             x: sun_x_pos,
             y: 0,
             z: 0,
-            nodes: [ 
+            nodes: [
                 {
                     type: "scale",
                     x: 1,
                     y: 1,
                     z: 1,
-                    nodes: [ 
-                    
+                    nodes: [
+
                         {
                             type: "node",
-                            
+
                             flags: {
                                 transparent: true
                             },
-                            
+
                             nodes: [
-                                { 
-                    
+                                {
+
                                     type: "material",
-                    
+
                                     baseColor:          { r: 1.0, g: 0.01, b: 1.0 },
                                     specularColor:      { r: 1.0, g: 0.01, b: 1.0 },
                                     specular:           1.0,
                                     shine:              2.0,
                                     emit:               20.0,
-                    
+
                                     nodes: [
-                            
+
                                         {
 
                                             type: "selector",
                                             id: "earthCircleOrbitSelector",
                                             selection: [1],
-                                            nodes: [ 
+                                            nodes: [
 
                                                 {  },
-                                        
+
                                                 {
-                            
-                                                    type: "disk", 
-                                                    id: "earth-in-space-circular-orbital-path" ,                                         
+
+                                                    type: "disk",
+                                                    id: "earth-in-space-circular-orbital-path" ,
                                                     radius: earth_orbital_radius_km,
                                                     innerRadius : earth_orbital_radius_km - earth_orbit_line_size_med,
                                                     height: earth_orbit_line_size_med,
                                                     rings: 360
                                                 },
-                                    
+
                                                 {
-                            
-                                                    type: "disk",                                           
-                                                    id: "sun-earth-circular-orbital-path" ,                                         
+
+                                                    type: "disk",
+                                                    id: "sun-earth-circular-orbital-path" ,
                                                     radius: earth_orbital_radius_km,
                                                     innerRadius : earth_orbital_radius_km - earth_orbit_line_size_large,
                                                     height: earth_orbit_line_size_large,
@@ -121,7 +121,7 @@ var earthCircleOrbit = SceneJS.createNode({
                             ]
                         }
                     ]
-                } 
+                }
             ]
         }
     ]
@@ -260,7 +260,7 @@ var earth_ellipse_solar_constant_by_month = function(month) {
 // }
 
 var earthEllipseOrbit = SceneJS.createNode({
-    type: "library",    
+    type: "library",
     nodes: [
         {
             id: "earthEllipseOrbit",
@@ -268,25 +268,25 @@ var earthEllipseOrbit = SceneJS.createNode({
             x: sun_x_pos + sun_focus * 2,
             y: 0,
             z: 0,
-            nodes: [ 
+            nodes: [
                 {
                     type: "scale",
                     x: 1,
                     y: 1,
                     z: 1,
-                    nodes: [ 
-                    
+                    nodes: [
+
                         {
                             type: "node",
-                            
+
                             flags: {
                                 transparent: true
                             },
-                            
+
                             nodes: [
 
-                                { 
-                    
+                                {
+
                                     type: "material",
 
                                     baseColor:          { r: 1.0, g: 1.0, b: 0.0 },
@@ -296,40 +296,40 @@ var earthEllipseOrbit = SceneJS.createNode({
                                     emit:               20.0,
 
                                     nodes: [
-                            
+
                                         {
 
                                             type: "selector",
                                             id: "earthEllipseOrbitSelector",
                                             selection: [2],
-                                            nodes: [ 
+                                            nodes: [
 
                                                 {  },
 
                                                 // Earth in Space
                                                 {
-                                                                    
-                                                    type: "disk", 
-                                                    id: "earth-in-space-elliptical-orbital-path" ,                                         
+
+                                                    type: "disk",
+                                                    id: "earth-in-space-elliptical-orbital-path" ,
                                                     radius: earth_orbital_radius_km,
                                                     innerRadius : earth_orbital_radius_km - earth_orbit_line_size_med,
                                                     semiMajorAxis: earthOrbitData.semiMajorAxis,
                                                     height: earth_orbit_line_size_med,
                                                     rings: 360
                                                 },
-                                                                            
+
 
                                                 // Sun-Earth Orbit
                                                 {
-                                                                    
-                                                    type: "disk",                                           
-                                                    id: "sun-earth-elliptical-orbital-path" ,                                         
+
+                                                    type: "disk",
+                                                    id: "sun-earth-elliptical-orbital-path" ,
                                                     radius: earth_orbital_radius_km,
                                                     innerRadius : earth_orbital_radius_km - earth_orbit_line_size_large,
                                                     semiMajorAxis: earthOrbitData.semiMajorAxis,
                                                     height: earth_orbit_line_size_large,
                                                     rings: 360
-                                                }                                        
+                                                }
                                             ]
                                         }
                                     ]
@@ -337,7 +337,7 @@ var earthEllipseOrbit = SceneJS.createNode({
                             ]
                         }
                     ]
-                } 
+                }
             ]
         }
     ]
