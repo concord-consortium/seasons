@@ -222,6 +222,16 @@ var earth_ellipse_location_by_month = function(month) {
     return ellipse;
 };
 
+var earth_ellipse_location_by_day = function(day) {
+    return earth_ellipse_points((day_number_by_month.jun - day) / 365);
+};
+
+var earth_ellipse_distance_from_sun_by_day = function(day) {
+    var ep = earth_ellipse_location_by_day(day);
+    var distance = Math.sqrt(ep[0] * ep[0] + ep[1] * ep[1] + ep[2] * ep[2]);
+    return distance;
+};
+
 var earth_ellipse_distance_from_sun_by_month = function(month) {
     var ep = earth_ellipse_location_by_month(month);
     var distance = Math.sqrt(ep[0] * ep[0] + ep[1] * ep[1] + ep[2] * ep[2]);

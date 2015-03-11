@@ -57,12 +57,14 @@
 // earth-orbit.js
 /* global
     earth_ellipse_distance_from_sun_by_month: false,
-    earth_ellipse_location_by_month: false
+    earth_ellipse_location_by_day: false,
+    earth_ellipse_distance_from_sun_by_day: false
 */
 
 // jpl-earth-ephemerides.js
 /* global
-    earth_ephemerides_solar_constant_by_month: false
+    earth_ephemerides_solar_constant_by_month: false,
+    day_number_by_month: false
 */
 
 /* DOM IDs referenced:
@@ -275,7 +277,8 @@ seasons.Scene = function(options) {
       }
     }
 
-    this.month = this.choose_month.value;
+    this.day = day_number_by_month[this.choose_month.value];
+
     this.choose_month.onchange = (function() {
         return function() {
             self.timeOfYearChange(this);
@@ -367,7 +370,7 @@ seasons.Scene = function(options) {
 
 seasons.Scene.prototype.toJSON = function() {
     var state = {
-        month: this.month,
+        day: this.day,
         circle_orbit: this.circle_orbit ? this.circle_orbit.checked : false,
         orbital_grid: this.orbital_grid ? this.orbital_grid.checked : this.orbital_grid,
         tilt: this.choose_tilt ? getRadioSelection(this.choose_tilt) : true,
@@ -387,7 +390,7 @@ seasons.Scene.prototype.toJSONStr = function() {
 };
 
 seasons.Scene.prototype.fromJSON = function(state, logger) {
-    this._timeOfYearChange(state.month);
+    this.setDay(state.day);
     this._circleOrbitPathChange(state.circle_orbit);
     this._orbitalGridChange(state.orbital_grid);
     this._perspectiveChange(state.view_selection);
@@ -443,10 +446,12 @@ seasons.Scene.prototype.set_earth_position = function(newpos) {
     this.earth_position.set({ x: newpos[0], y: newpos[1], z: newpos[2] });
 };
 
+seasons.Scene.prototype.orbital_angle = function(day) {
+  return (day - day_number_by_month.jun ) * 360 / 365;
+};
+
 seasons.Scene.prototype.get_orbital_angle = function() {
-  var mon = this.month || 'jun';
-  var angle = this.month_data[mon].index * 30 - 150;
-  return angle;
+  return this.orbital_angle(this.day);
 };
 
 seasons.Scene.prototype.get_earth_distance = function() {
@@ -729,8 +734,8 @@ seasons.Scene.prototype.earthLabel = function() {
 
     if (this.earth_label) {
 
-        var edist = earth_ellipse_distance_from_sun_by_month(this.month);
-        var labelStr = this.month_data[this.month].long_name + " ";
+        var edist = earth_ellipse_distance_from_sun_by_day(this.day);
+        var labelStr = "Day: " + this.day + " ";
         labelStr += sprintf("Earth Distance: %3.1f million km<br>", edist * scale_factor / 1000000);
         // labelStr += sprintf("Solar Radiation:  %4.1f W/m2<br>", solar_flux);
         if (this.debugging) {
@@ -832,8 +837,8 @@ seasons.Scene.prototype._perspectiveChange = function(view_selection) {
 
 seasons.Scene.prototype.setEarthSunLine = function() {
     var scale = {};
-    var distance2 = earth_ellipse_distance_from_sun_by_month(this.month) / 2;
-    var angle = this.month_data[this.month].angle;
+    var distance2 = earth_ellipse_distance_from_sun_by_day(this.day) / 2;
+    var angle = this.orbital_angle(this.day);
 
     // var distance = earth_ephemerides_datum_by_month('jun').rg * au2km * factor;
 
@@ -857,41 +862,35 @@ seasons.Scene.prototype.setEarthSunLine = function() {
     }
 };
 
+seasons.Scene.prototype.setDay = function(day) {
+    var dRotation = this.orbital_angle(day) - this.orbital_angle(this.day);
+
+    this.day = day;
+
+    // Technically, this assumes that the earth is in aphelion on June 20th
+    // (ie on the equinox.) This is not quite correct, the actual aphelion is on July 6.
+    // However, it's clearly close enough.
+    this.set_earth_position(earth_ellipse_location_by_day(this.day));
+    if (this.look_at_selection === 'earth') {
+        this._perspectiveChange(this.view_selection);
+    }
+    this.earth_rotation.set("angle", this.earth_rotation.get("angle") + dRotation);
+    this.setEarthSunLine();
+    this.earthLabel();
+    this.earthPointer();
+    this.updateSpaceshipPosition();
+
+    if (this.linked_scene) {
+        this.linked_scene.setDay(this.day);
+    }
+};
 
 seasons.Scene.prototype.timeOfYearChange = function() {
     this._timeOfYearChange(this.choose_month.value);
 };
 
 seasons.Scene.prototype._timeOfYearChange = function(month) {
-    this.choose_month.value = month;
-    var mi_1 = this.month_data[this.month].index;
-    this.month = month;
-    var mi_2 = this.month_data[month].index;
-    if (mi_2 < mi_1) mi_2 = mi_2 + 12;
-    var rotation_increment = (mi_2 - mi_1) * 30;
-
-    this.set_earth_position(earth_ellipse_location_by_month(this.month));
-
-    if (this.look_at_selection !== 'orbit') {
-        this._perspectiveChange(this.view_selection);
-    }
-    this.earth_rotation.set("angle", this.earth_rotation.get("angle") + rotation_increment);
-    this.setEarthSunLine();
-    this.earthLabel();
-    this.earthPointer();
-    this.updateSpaceshipPosition();
-    if (LITE_VERSION) {
-      var results = document.getElementById("button-results");
-      results.textContent = '';
-    }
-    if (this.linked_scene) {
-        this.linked_scene._timeOfYearChange(month);
-    }
-    if(this.choose_month_callbacks.length > 0) {
-      for(var i = 0; i < this.choose_month_callbacks.length; i++) {
-        this.choose_month_callbacks[i](month);
-      }
-    }
+    this.setDay(day_number_by_month[month]);
 };
 
 
