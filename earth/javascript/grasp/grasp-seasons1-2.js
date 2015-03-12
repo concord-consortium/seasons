@@ -1956,12 +1956,31 @@ function generateCityColorKeys() {
 
 if (!LITE_VERSION) { generateCityColorKeys(); }
 
+function setDay(value) {
+    scene3.setDay(value);
+    var dateString = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ][scene3.date.getUTCMonth()] + " " + scene3.date.getUTCDate();
+    console.log(dateString);
+    $('#date').text(dateString);
+}
+
 $('#day-slider').rangeinput();
 $('#day-slider').change(function(evt, value) {
-    scene3.setDay(value);
+    setDay(value);
 });
-// have to repeat myself here, until I figure out rangeInput better.
 $('#day-slider').data().rangeinput.setValue(day_number_by_month.jun);
-scene3.setDay(day_number_by_month.jun);
+setDay(day_number_by_month.jun);
 
 }());

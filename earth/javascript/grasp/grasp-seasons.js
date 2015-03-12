@@ -883,6 +883,11 @@ seasons.Scene.prototype.setDay = function(day) {
     if (this.linked_scene) {
         this.linked_scene.setDay(this.day);
     }
+
+    // Represent the actual day being referenced a javascript Date object
+    this.date = new Date(
+        new Date('2010-01-01z').getTime() + (24*60*60*1000) * this.day
+    );
 };
 
 seasons.Scene.prototype.timeOfYearChange = function() {
