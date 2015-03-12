@@ -43,6 +43,8 @@
 // cities.js
 /* global cities: false */
 
+// jpl-earth-ephemerides.js
+/* global day_number_by_month: false */
 /* DOM IDs referenced:
 
     earth-rotation
@@ -1954,6 +1956,12 @@ function generateCityColorKeys() {
 
 if (!LITE_VERSION) { generateCityColorKeys(); }
 
-choose_month.onchange();
+$('#day-slider').rangeinput();
+$('#day-slider').change(function(evt, value) {
+    scene3.setDay(value);
+});
+// have to repeat myself here, until I figure out rangeInput better.
+$('#day-slider').data().rangeinput.setValue(day_number_by_month.jun);
+scene3.setDay(day_number_by_month.jun);
 
 }());

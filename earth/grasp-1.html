@@ -12,33 +12,17 @@
 
     <style>
 
-    /* Override skin1.css to make it vertical */
-
-    /* height is now larger than width  */
     .slider {
-      height:300px;
-      width:9px;
-      margin:0 0 0 60px;
+      width:800px;
     }
 
-    .vertical .slider {
-      height:300px;
-      width:9px;
-      margin:20px 8px 12px 24px;
-    }
-
-    /* tweak drag handle position */
-    .handle {
-      top:0;
-      left:-10px;
-    }
 
     /* position progressbar on the bottom edge */
-    .progress {
+/*    .progress {
       width:9px;
       position:absolute;
       bottom:0;
-    }
+    }*/
 
     .range {
         background: none repeat scroll 0 0 transparent;
@@ -102,6 +86,12 @@
           </div>
         </li>
       </ul>
+
+      <div class="glCanvasHalfFrame column">
+
+      <div id="day-slider-div" style="width: 100%">
+        <input id="day-slider" name="day-slider" type="range" min="0" max="364" step="1" value="0" />
+      </div>
 
     </div>
   </div>
