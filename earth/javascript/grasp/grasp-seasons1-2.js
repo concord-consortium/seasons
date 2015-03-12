@@ -1981,9 +1981,10 @@ function setDay(value) {
 }
 
 $('#day-slider').rangeinput();
-$('#day-slider').change(function(evt, value) {
+$('#day-slider').bind('onSlide', function(evt, value) {
     setDay(value);
 });
+
 $('#day-slider').data().rangeinput.setValue(day_number_by_month.jun);
 setDay(day_number_by_month.jun);
 
