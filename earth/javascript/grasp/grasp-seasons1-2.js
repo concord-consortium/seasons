@@ -1408,6 +1408,7 @@ function seasonsAnimate() {
             scene3.earth_rotation.set("angle", scene3.earth_rotation.get("angle") + 0.25);
         }
         seasonsRender();
+        drawRaysView();
     }
 }
 
@@ -1555,7 +1556,7 @@ function updateLatitudeLineAndCity() {
   var earth_rotation = document.getElementById("earth-rotation");
   if (selected_city_latitude && selected_city_latitude.value !== "city ...") {
     var city_index = Number(selected_city_latitude.value);
-    var city = active_cities[city_index];
+    city = active_cities[city_index];
     var city_location = city.location;
     if (LITE_VERSION) {
       var results = document.getElementById("button-results");
@@ -2004,4 +2005,138 @@ $('#day-slider').bind('onSlide', function(evt, value) {
 $('#day-slider').data().rangeinput.setValue(day_number_by_month.jun);
 setDay(day_number_by_month.jun);
 
+function noonSolarAltitude(orbitalTiltDegrees, day, latitude) {
+    // Angle of tilt axis, looked at from above (i.e., projected onto xy plane)
+    // June solstice = 0, September equinox = pi/2, December solstice = pi, March equinox = 3pi/2
+    var tiltAxisZRadians = 2 * Math.PI * (day - day_number_by_month.jun) / 365;
+
+    // How much is a given latitude tilted up (+) or down (-) toward the ecliptic?
+    // (-23.5 degrees on June solstice, 0 degrees at equinoxes, +23.5 degrees on December solstice)z
+    var effectiveTiltDegrees = -Math.cos(tiltAxisZRadians) *  orbitalTiltDegrees;
+
+    return 90 - (latitude + effectiveTiltDegrees);
+}
+
+function getNoonSolarAltitude() {
+    return noonSolarAltitude(scene3.earth_tilt.get('rotation').angle, scene3.day, city.location.signed_latitude);
+}
+
+// Sunrays seen by an observer facing east at solar noon at the selected city's latitude
+// (facing east means sun comes from the right if you're above the ecliptic plane, from the left
+// if you're below the ecliptic plane)
+function drawRaysView() {
+    var canvas = document.getElementById('raysViewCanvas');
+    var solarAngle = getNoonSolarAltitude();
+
+    var DARK_BLUE = '#6E9CEF';
+    var LIGHT_BLUE = '#99ADF1';
+    var LIGHT_GREEN = '#84A44A';
+    var DARK_GREEN = '#4C7F19';
+    var RAY_COLOR = '#D8D8AC';
+
+    var SKY_FRACTION = 0.8;
+
+    // Try to be robust to any fiddling with the DOM during later protoyping...
+    if (!canvas) return;
+
+    var ctx = canvas.getContext('2d');
+    var width = canvas.width;
+    var height = canvas.height;
+    var skyHeight = SKY_FRACTION * height;
+    var groundHeight = height - skyHeight;
+
+    var skyGradient = ctx.createLinearGradient(0, 0, 0, 1);
+    skyGradient.addColorStop(0, DARK_BLUE);
+    skyGradient.addColorStop(1, LIGHT_BLUE);
+
+    ctx.fillStyle = skyGradient;
+    ctx.fillRect(0, 0, width, skyHeight);
+
+    var groundGradient = ctx.createLinearGradient(0, 0, 0, 1);
+    groundGradient.addColorStop(0, LIGHT_GREEN);
+    groundGradient.addColorStop(1, DARK_GREEN);
+
+    ctx.fillStyle = groundGradient;
+    ctx.fillRect(0, skyHeight, width, groundHeight);
+
+    if (solarAngle < 0 || solarAngle > 180) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.fillRect(0, 0, width, height);
+        return;
+    }
+
+    // Longest possible line.
+
+    var maxLength = Math.sqrt(skyHeight * skyHeight + width * width);
+    var NUM_BEAMS = 10;
+    var x;
+    var dx = width/(NUM_BEAMS+1) / Math.sin(solarAngle * Math.PI / 180);
+    var lineRotationRadians = (90 - solarAngle) * (Math.PI/180);
+
+    ctx.strokeStyle = RAY_COLOR;
+    ctx.fillStyle = RAY_COLOR;
+
+    // Could be +/- Infinity when solarAngle is 0
+    if (isFinite(dx)) {
+        for (x = dx / 2; x < width; x += dx) {
+            ctx.save();
+            ctx.translate(x, skyHeight);
+            line(ctx, lineRotationRadians, 5, maxLength);
+            arrow(ctx, lineRotationRadians);
+            ctx.restore();
+        }
+    }
+
+    var dy = Math.abs(width/(NUM_BEAMS+1) / Math.cos(solarAngle * Math.PI / 180));
+    var yInitial = solarAngle < 90 ? (dy / 2) : (((x - width) / dx) * dy);
+    var xEdge = solarAngle < 90 ? 0 : width;
+    if (isFinite(dy)) {
+        for (var y = skyHeight - yInitial; y > 0; y -= dy) {
+            ctx.save();
+            ctx.translate(xEdge, y);
+            line(ctx, lineRotationRadians, 0, maxLength);
+            ctx.restore();
+        }
+    }
+
+    function line(ctx, angle, lengthAdjustment, maxLength) {
+        ctx.save();
+
+        ctx.rotate(angle);
+        ctx.lineWidth = 4;
+
+        ctx.beginPath();
+        ctx.moveTo(0, -lengthAdjustment);
+        ctx.lineTo(0, -maxLength);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function arrow(ctx, angle) {
+        ctx.save();
+
+        ctx.rotate(angle);
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-10, -20);
+        ctx.lineTo(0, -16);
+        ctx.lineTo(10, -20);
+        ctx.lineTo(0, 0);
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+function setupRaysView() {
+    var canvas = document.getElementById('raysViewCanvas');
+    canvas.setAttribute('width', canvas.parentElement.offsetWidth + 'px');
+    canvas.setAttribute('height', canvas.parentElement.offsetHeight + 'px');
+}
+setupRaysView();
+
+window.scene3 = scene3;
 }());
