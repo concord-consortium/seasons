@@ -93,10 +93,19 @@
         <h2 style="font-size: 48px"id="date">Day</h2>
       </div>
 
-      <br />
       <label><input id="earth-rotation" type="checkbox"/>Rotating?</label>
       <br />
       <label><input id="earth-tilt" type="checkbox" checked/>Tilted?</label>
+      <br />
+
+      <form id="select-city-latitude">
+        <label for="selected-city-latitude">Choose city:</label>
+
+        <select id="selected-city-latitude" name="selected-city-latitude">
+          <option disabled selected>city ...</option>
+        </select>
+      </form>
+
     </div>
   </div>
 
@@ -153,12 +162,6 @@
                   </form>
                 </p>
                 <p>
-                  <form id="select-city-latitude">
-                    <label for="selected-city-latitude">Choose city:</label>
-                    <select id="selected-city-latitude" name="selected-city-latitude">
-                      <option disabled selected>city ...</option>
-                    </select>
-                  </form>
                 </p>
                 <p>
                   <form id="city-latitude-button-results">
