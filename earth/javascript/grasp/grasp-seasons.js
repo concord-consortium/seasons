@@ -243,27 +243,6 @@ seasons.Scene = function(options) {
     this.normalized_earth_eye_side =   normalized_initial_earth_eye_side;
     this.normalized_earth_eye_top  =   normalized_initial_earth_eye_side;
 
-    // Some useful variables
-
-    this.month_data = {
-        "jan": { index:  0, num:   1, angle: 210, short_name: 'Jan', long_name: 'January' },
-        "feb": { index:  1, num:   2, angle: 240, short_name: 'Feb', long_name: 'February' },
-        "mar": { index:  2, num:   3, angle: 270, short_name: 'Mar', long_name: 'March' },
-        "apr": { index:  3, num:   4, angle: 300, short_name: 'Apr', long_name: 'April' },
-        "may": { index:  4, num:   5, angle: 330, short_name: 'May', long_name: 'May' },
-        "jun": { index:  5, num:   6, angle:   0, short_name: 'Jun', long_name: 'June' },
-        "jul": { index:  6, num:   7, angle:  30, short_name: 'Jul', long_name: 'July' },
-        "aug": { index:  7, num:   8, angle:  60, short_name: 'Aug', long_name: 'August' },
-        "sep": { index:  8, num:   9, angle:  90, short_name: 'Sep', long_name: 'September' },
-        "oct": { index:  9, num:  10, angle: 120, short_name: 'Oct', long_name: 'October' },
-        "nov": { index: 10, num:  11, angle: 150, short_name: 'Nov', long_name: 'Novemeber' },
-        "dec": { index: 11, num:  12, angle: 180, short_name: 'Dec', long_name: 'December' }
-    };
-
-    this.month_names = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-
-    this.seasons = ["Fall", "Winter", "Spring", "Summer"];
-
     // Setting up callbacks for ...
     var self = this;
 
@@ -553,20 +532,6 @@ seasons.Scene.prototype.updateSpaceshipPosition = function() {
         dot = vec3.dot(v2, v3, v4);
         pitch_angle = Math.acos(dot) * rad2deg;
         if (north > 0) { pitch_angle = -pitch_angle; }
-        switch (this.month) {
-            case "jun":
-            this.spaceship_rotation_pitch.set({ "angle":  pitch_angle, x: 1.0, z: 0.0 });
-            break;
-            case "sep":
-            this.spaceship_rotation_pitch.set({ "angle":  -pitch_angle, x: 0.0, z: 1.0 });
-            break;
-            case "dec":
-            this.spaceship_rotation_pitch.set({ "angle": -pitch_angle, x: 1.0, z: 0.0 });
-            break;
-            case "mar":
-            this.spaceship_rotation_pitch.set({ "angle": pitch_angle, x: 0.0, z: 1.0 });
-            break;
-        }
     }
 };
 
