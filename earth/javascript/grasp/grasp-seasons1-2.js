@@ -1393,6 +1393,10 @@ function seasonsRender() {
 }
 
 var earth_rotation = document.getElementById("earth-rotation");
+var earth_tilt = document.getElementById("earth-tilt");
+earth_tilt.onchange = function() {
+    scene3._updateTilt(earth_tilt.checked);
+}
 
 function seasonsAnimate() {
     var sampleTime = new Date().getTime();
