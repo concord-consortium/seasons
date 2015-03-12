@@ -110,8 +110,8 @@ h4 {
 
 #container {
     position: relative;
-    width: 1200px !important;
-    min-width: 1200px !important; /*padding: 10px 10px 10px 50px; */
+    width: 1240px !important;
+    min-width: 1240px !important; /*padding: 10px 10px 10px 50px; */
     margin: 0 auto;
     border: 0;
     clear: both;
@@ -459,7 +459,7 @@ h4 {
 }
 
 .glCanvasHalfFrame {
-    width: 600px;
+    width: 831px;
     margin-left: 5px;
     padding: 2px;
     display: inline-block;
@@ -467,8 +467,8 @@ h4 {
 }
 
 .glCanvasHalfFrame canvas {
-    width: 600px;
-    height: 433px;
+    width: 830px;
+    height: 600px;
     margin-top: 5px;
     margin-bottom: 5px;
     background-color: black;
@@ -554,7 +554,7 @@ fieldset label  {
 
 
 .narrow {
-    width: 500px;
+    width: 370px;
 }
 
 .column {
