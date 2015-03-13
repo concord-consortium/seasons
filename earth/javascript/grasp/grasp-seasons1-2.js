@@ -1508,6 +1508,22 @@ var city_option;
 var active_cities = [];
 var city, city_location;
 
+// Add Urbana, IL for GRASP. No time to look up all properties, so not adding to the general list
+// in cities.js
+cities.unshift({
+    name: "Urbana, Illinois",
+    country: "United States",
+    active: true,
+    location: {
+        signed_longitude: 88.20,
+        signed_latitude: 40.11,
+        latitude: 40.11,
+        lat_dir: "N",
+        longitude: 88.20,
+        long_dir: "W"
+    }
+});
+
 // FIXME: refactor access to key
 var c1 = 0;
 for (var c = 0; c < cities.length; c++) {
