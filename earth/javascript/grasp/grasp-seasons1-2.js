@@ -1515,6 +1515,7 @@ cities.unshift({
     name: "Urbana, Illinois",
     country: "United States",
     active: true,
+    selected: true,
     location: {
         signed_longitude: 88.20,
         signed_latitude: 40.11,
@@ -1541,11 +1542,13 @@ for (i = 0; i < active_cities.length; i++) {
     city = active_cities[i];
     city_location = city.location;
     city_option.value = i;
+    city_option.selected = city.selected;
     city_option.textContent = city.name + ', ' + city.country + ', ' +
-
-        sprintf("%2.0f", city_location.latitude) + ' degrees ' + city_location.lat_dir;
+    sprintf("%2.0f", city_location.latitude) + ' degrees ' + city_location.lat_dir;
     selected_city_latitude.appendChild(city_option);
 }
+
+updateLatitudeLineAndCity();
 
 var city_latitude_temperature = document.getElementById("city-latitude-temperature");
 var city_latitude_temperature_label = document.getElementById("city-latitude-temperature-label");
