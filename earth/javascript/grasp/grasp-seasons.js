@@ -435,6 +435,9 @@ seasons.Scene.prototype._updateTilt = function(tilt) {
             tilt_str = "No Tilt";
             break;
     }
+    if (this.linked_scene) {
+        this.linked_scene._updateTilt(tilt);
+    }
 };
 
 seasons.Scene.prototype.get_earth_position = function() {
