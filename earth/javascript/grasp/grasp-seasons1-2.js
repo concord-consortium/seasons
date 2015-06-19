@@ -1508,6 +1508,19 @@ var selected_city_latitude = document.getElementById("selected-city-latitude");
 var city_option;
 var active_cities = [];
 var city, city_location;
+var currentLatitude;
+
+var latitudeSlider = document.getElementById("latitude-slider");
+var latitudeReading = document.getElementById("latitude-reading");
+
+$(latitudeSlider).slider({
+    min: -90,
+    max: 90,
+    step: 1
+})
+$(latitudeSlider).on('slide', function(evt, ui) {
+    setLatitude(ui.value);
+});
 
 // Add Urbana, IL for GRASP. No time to look up all properties, so not adding to the general list
 // in cities.js
@@ -1555,22 +1568,52 @@ var city_latitude_temperature_label = document.getElementById("city-latitude-tem
 var city_latitude_temperature_prediction = document.getElementById("city-latitude-temperature-prediction");
 var city_latitude_button_results = document.getElementById("city-latitude-button-results");
 
+function setLatitude(lat) {
+    displayLatitude(lat);
+    scene3.latitude_line.setLatitude(lat);
+    scene3.earth_surface_location.setLocation(lat, city.location.signed_longitude);
+    currentLatitude = lat;
+
+    if (earth_rotation) {
+        earth_rotation.checked = false;
+    }
+}
+
+function displayLatitude(lat) {
+    // Slider.
+    $(latitudeSlider).slider('value', lat);
+    // Reading.
+    var latText = Math.round(lat);
+    if (lat > 0) {
+        latText = latText + ' degrees N';
+    } else {
+        latText = Math.abs(latText) + ' degrees S';
+    }
+    latitudeReading.textContent = latText;
+    // Cities pulldown.
+    if (selected_city_latitude.value) {
+        var currentCity = active_cities[Number(selected_city_latitude.value)];
+        if (Math.round(currentCity.location.signed_latitude) !== Math.round(lat)) {
+            // Unselect this city.
+            selected_city_latitude.value = null;
+        }
+    }
+}
+
 function updateLatitudeLineAndCity() {
   var earth_rotation = document.getElementById("earth-rotation");
   if (selected_city_latitude && selected_city_latitude.value !== "city ...") {
     var city_index = Number(selected_city_latitude.value);
     city = active_cities[city_index];
+    currentLatitude = city.location.latitude;
     var city_location = city.location;
     if (LITE_VERSION) {
       var results = document.getElementById("button-results");
       results.textContent = '';
     }
-    scene3.latitude_line.setLatitude(city_location.signed_latitude);
     scene3.earth_surface_location.setLocation(city_location.signed_latitude, city_location.signed_longitude);
     scene3.earth_rotation.set("angle", city_location.signed_longitude + scene3.get_orbital_angle());
-  }
-  if (earth_rotation) {
-    earth_rotation.checked = false;
+    setLatitude(city_location.signed_latitude);
   }
 }
 
@@ -2000,12 +2043,16 @@ function setDay(value) {
     $('#date').text(dateString);
 }
 
-$('#day-slider').rangeinput();
-$('#day-slider').bind('onSlide', function(evt, value) {
-    setDay(value);
+$('#day-slider').slider({
+    min: 0,
+    max: 364,
+    step: 1,
+    value: day_number_by_month.jun
+});
+$('#day-slider').on('slide', function(evt, ui) {
+    setDay(ui.value);
 });
 
-$('#day-slider').data().rangeinput.setValue(day_number_by_month.jun);
 setDay(day_number_by_month.jun);
 
 function noonSolarAltitude(orbitalTiltDegrees, day, latitude) {
@@ -2021,7 +2068,7 @@ function noonSolarAltitude(orbitalTiltDegrees, day, latitude) {
 }
 
 function getNoonSolarAltitude() {
-    return noonSolarAltitude(scene3.earth_tilt.get('rotation').angle, scene3.day, city.location.signed_latitude);
+    return noonSolarAltitude(scene3.earth_tilt.get('rotation').angle, scene3.day, currentLatitude);
 }
 
 // Sunrays seen by an observer facing east at solar noon at the selected city's latitude

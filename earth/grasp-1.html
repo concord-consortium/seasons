@@ -4,47 +4,34 @@
 <head>
     <title>GRASP</title>
     <link href="../stylesheets/grasp.css" rel="stylesheet" type="text/css"/>
-    <link href="../stylesheets/rangeinput.css" rel="stylesheet" type="text/css" />
-    <script src="../lib/jquery.tools-1.2.5.min.js"></script>
+    <link href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../lib/glmatrix.js"></script>
-</head>
-
     <style>
-
-    .slider {
-      width:800px;
-    }
-
-    .range {
-        background: none repeat scroll 0 0 transparent;
-        border: 0 none;
-        border-radius: 2px 2px 2px 2px;
-        color: #FFFFFF;
-        float: left;
-        font-size: 12px;
-        margin: -5px 0 10px;
-        text-align: center;
-        width: 30px;
-    }
-
-    .vertical .range {
-        background: none repeat scroll 0 0 transparent;
-        border: 0 none;
-        border-radius: 2px 2px 2px 2px;
-        color: #FFFFFF;
-        float: left;
-        font-size: 14px;
-        margin: -8px 12px 0px -26px;
-        text-align: center;
-        width: 30px;
-    }
-
-    input {
-      margin: 5px;
-    }
-
+      #day-slider {
+        width: 800px;
+        margin: 0 auto;
+        margin-top: 20px;
+        background: #3C72E6;
+      }
+      #day-slider .ui-slider-handle {
+        font-size: 20px;
+        border-radius: 50px;
+        background: #fff;
+        box-shadow: 0 0 6px #000;
+      }
+      #latitude-slider {
+        display: inline-block;
+        width: 280px;
+      }
+      input {
+        margin: 5px;
+      }
+      .row {
+        margin: 15px 0;
+      }
     </style>
-
 </head>
 <div id="container">
 
@@ -84,20 +71,18 @@
     </div>
 
     <div style="text-align: center">
-      <div id="day-slider-div" style="width: 800px; margin-left: 200px; margin-top: 20px">
-        <input id="day-slider" name="day-slider" type="range" min="0" max="364" step="1" value="0" />
-      </div>
+      <div id="day-slider"></div>
 
-      <div style="display:block; padding-top: 40px; padding-bottom: 10px;">
+      <div style="display:block; padding-top: 20px; padding-bottom: 10px;">
         <h2 style="font-size: 48px"id="date">Day</h2>
       </div>
 
-      <label><input id="earth-rotation" type="checkbox"/>Rotating?</label>
+      <label class='row'><input id="earth-rotation" type="checkbox"/>Rotating?</label>
       <br />
-      <label><input id="earth-tilt" type="checkbox" checked/>Tilted?</label>
+      <label class='row'><input id="earth-tilt" type="checkbox" checked/>Tilted?</label>
       <br />
 
-      <form id="select-city-latitude">
+      <form id="select-city-latitude" class='row'>
         <label for="selected-city-latitude">Choose city:</label>
 
         <select id="selected-city-latitude" name="selected-city-latitude">
@@ -105,6 +90,12 @@
         </select>
       </form>
 
+      <div class='row'>
+        <label for="latitude-slider">Or latitude:</label>
+        <div id="latitude-slider"></div>
+      </div>
+
+      <div class='row'>Current latitude: <span id="latitude-reading"></span></div>
     </div>
   </div>
 
